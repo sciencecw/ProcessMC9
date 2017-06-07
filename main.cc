@@ -30,7 +30,7 @@ bool b16003=false;
 float themass=1000.;
 
 
-void  QCDhists(std::string outdir, int ibin, float goalintlum,
+void  QCDhists(int imode, std::string outdir, int ibin, float goalintlum,
 int nbin, float* xsec, int* nfiles, std::string* binnames,
 std::string* aaname,std::string sumhist,
 bool hasPre,bool donorm, bool blind, bool b16003,float themass);
@@ -45,9 +45,11 @@ std::string decomment(std::string line) {
 
 int main(int argc, char *argv[])
 { 
-  int ibin = (int)atoi((argv[1]));
-  char* parmfile = (argv[2]); 
-  char* outdir = (argv[3]); 
+
+  int imode = (int)atoi((argv[1]));
+  int ibin = (int)atoi((argv[2]));
+  char* parmfile = (argv[3]); 
+  char* outdir = (argv[4]); 
 
   std::cout<<"bin is "<<ibin<<std::endl;
   std::cout<<"input file is "<<parmfile<<std::endl;
@@ -107,7 +109,7 @@ int main(int argc, char *argv[])
 
   }
   std::string haha(outdir);
-  QCDhists(haha,ibin,goalintlum,
+  QCDhists(imode,haha,ibin,goalintlum,
 nbin,xsec,nfiles,binnames,
 filesname,sumhist,
 hasPre, donorm, blind, b16003, themass);

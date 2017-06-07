@@ -96,9 +96,8 @@ std::string histnames[nhist]={
 
 
 
-//void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* binnames,std::string* aaname,std::string ohname, bool hasPre,bool donorm, bool blind, bool b16003,float themass) {
 
-void QCDhists(std::string outdir, int ibin, float goalintlum,  
+void QCDhists(int imode, std::string outdir, int ibin, float goalintlum,  
 int nbin, float* xsec, int* nfiles, std::string* binnames,std::string* filesnames,
 std::string sumhistname,
  bool hasPre,bool donorm, bool blind, bool b16003,float themass) {
@@ -110,9 +109,10 @@ std::string sumhistname,
 
     // first make histograms for each file in each bin for the qcd sample
 
-  std::cout<<"making histograms for each file in each bin"<<std::endl;
-  for(int i=0;i<nbin;i++) {  // for each bin
+  if(imode==0) {
 
+    std::cout<<"making histograms for each file in each bin"<<std::endl;
+    int i=ibin;
     std::ifstream inputconfig(filesnames[i]);
     std::cout<<"input config file is: "<<filesnames[i]<<std::endl;
     int linecounter = 0;
@@ -124,17 +124,17 @@ std::string sumhistname,
 
       int itmp;
       if(!b16003) {
-	itmp = EMJselect(true,hasPre,inputfile.c_str(),outputfile.c_str(),DHTcut, Dpt1cut,Dpt2cut,Dpt3cut,Dpt4cut,Djetacut,Dalphacut,DmaxIPcut,0.9,0.9,Dntrk1,Dnemcut,blind,
+	  itmp = EMJselect(true,hasPre,inputfile.c_str(),outputfile.c_str(),DHTcut, Dpt1cut,Dpt2cut,Dpt3cut,Dpt4cut,Djetacut,Dalphacut,DmaxIPcut,0.9,0.9,Dntrk1,Dnemcut,blind,
 			       Dmetcut,themass,Dmasscut,Dtheta2dcut
                          );
       } else {
         itmp = EMJ16003(true,hasPre,inputfile.c_str(),outputfile.c_str());
       }
-	linecounter +=1;
+	  linecounter +=1;
     }  // end of loop over files
-  } // end of loop over bins
 
 
+  } else {  // other imodes
 
     // get normalization
     //  double norm[nbin];
@@ -197,6 +197,7 @@ std::string sumhistname,
     vv2[i]->Write();
   }
 
+  }
 
     return;
 }
