@@ -199,6 +199,8 @@ std::string sumhistname,
 
   }
 
+  std::cout<<"job finished succcessfully"<<std::endl;
+
     return;
 }
 
@@ -335,7 +337,6 @@ void  HistNorm(std::string outdir, vector<double>& norm,int nbin,float* xsec, in
         std::cout<<"norm "<<i<<" "<<norm[i]<<std::endl;
     }
 
-    std::cout<<"Job successfully completed"<<std::endl;
 
     return;
 }
