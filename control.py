@@ -49,7 +49,7 @@ if options.sample=="QQCD":
 elif options.sample=="QCD":
   dirname="files_QCD"
   prefix = "QCD"
-  nbin=4
+  nbin=3
 elif options.sample=="ModelA":
   dirname="files_modA"
   prefix = "modelA"
