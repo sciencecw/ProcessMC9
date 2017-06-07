@@ -1,0 +1,10 @@
+universe = vanilla
+Executable = condor-executable.sh
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+Requirements = TARGET.FileSystemDomain == "privnet" && machine != "r510-0-1.privnet"
+Output = QCDhists_sce_$(cluster)_$(process).stdout
+Error = QCDhists_sce_$(cluster)_$(process).stderr
+Log = QCDhists_sce_$(cluster)_$(process).condor
+Arguments = QCD $(process) /data/users/eno/em10/CMSSW_8_0_26_patch1/src/ProcessMC8 0 0 0 1000.
+Queue 1
