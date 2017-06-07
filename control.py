@@ -45,7 +45,7 @@ else:
 if options.sample=="QQCD":
   dirname="files_QQCD"
   prefix = "QQCD"
-  nbin=2
+  nbin=3
 elif options.sample=="QCD":
   dirname="files_QCD"
   prefix = "QCD"
