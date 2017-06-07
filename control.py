@@ -86,26 +86,29 @@ hostarea2=hostarea+dirname+"/"
 #write the .jdl file and the bash script to submit the condor job
 f = open("massjobs.sh",'w')
 
+if options.mode==1:
+  nbin=1
+
 print "number of bins is "+str(nbin)
 for i in range(0,nbin):
   print "i="+str(i+1)
   parmsfile=hostarea+"configs/parms_"+prefix+".txt"
   name = "files-"+prefix+"-"+str(i+1)
   
-  jdlfile = open(hostarea2+"condor-jobs-"+name+".jdl","w")
+  jdlfile = open(hostarea2+"condor-jobs-"+str(options.mode)+"_"+name+".jdl","w")
   jdlfile.write("universe = vanilla"+'\n')
   jdlfile.write("Executable = "+mainarea+"/condor-executable.sh"+'\n')
   jdlfile.write("should_transfer_files = NO"+'\n')
   jdlfile.write("Requirements = TARGET.FileSystemDomain == \"privnet\""+'\n')
-  jdlfile.write("Output = "+hostarea2+name+"_sce_$(cluster)_$(process).stdout"+'\n')
-  jdlfile.write("Error = "+hostarea2+name+"_sce_$(cluster)_$(process).stderr"+'\n')
-  jdlfile.write("Log = "+hostarea2+name+"_sce_$(cluster)_$(process).condor"+'\n')
+  jdlfile.write("Output = "+hostarea2+name+"_"+str(options.mode)+"_sce_$(cluster)_$(process).stdout"+'\n')
+  jdlfile.write("Error = "+hostarea2+name+"_"+str(options.mode)+"_sce_$(cluster)_$(process).stderr"+'\n')
+  jdlfile.write("Log = "+hostarea2+name+"_"+str(options.mode)+"_sce_$(cluster)_$(process).condor"+'\n')
   jdlfile.write("Arguments = "+name+" $(process) "+hostarea+" "+str(options.mode)+" "+str(i)+" "+parmsfile+" "+
   hostarea2+" "+'\n')
   jdlfile.write("Queue 1"+'\n')
   jdlfile.close()
 
-  f.write("condor_submit "+dirname+"/condor-jobs-"+name+'.jdl'+'\n')
+  f.write("condor_submit "+dirname+"/condor-jobs-"+str(options.mode)+"_"+name+'.jdl'+'\n')
 
 f.close()
 

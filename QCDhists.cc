@@ -335,6 +335,7 @@ void  HistNorm(std::string outdir, vector<double>& norm,int nbin,float* xsec, in
         std::cout<<"norm "<<i<<" "<<norm[i]<<std::endl;
     }
 
+    std::cout<<"Job successfully completed"<<std::endl;
 
     return;
 }

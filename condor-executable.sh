@@ -34,7 +34,7 @@ export VO_CMS_SW_DIR=/sharesoft/cmssw
 cd $RUN_DIR
 eval `scramv1 runtime -sh`
 
-FINAL_PREFIX_NAME=`echo ${UNIQUE_ID}_${CONDOR_PROCESS}`
+FINAL_PREFIX_NAME=`echo ${UNIQUE_ID}_${CONDOR_PROCESS}_${RUN_MODE}`
 FINAL_LOG=`echo $FINAL_PREFIX_NAME.log`
 
 #
