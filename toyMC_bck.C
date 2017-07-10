@@ -11,7 +11,7 @@
 
 
 int idbg=0;
-int nexp = 10000;
+int nexp = 10000000;
 float eff_b_true = 0.03;
 float eff_l_true = 0.001;
 float ave_n_jet1 = 200000;
@@ -26,7 +26,8 @@ void toyMC_bck()
 {
   TH1F* hel = new TH1F("hel","measured eff light",1000,-0.001,0.01);
   TH1F* hb = new TH1F("hb","measured eff b",1000,-0.1,0.06);
-  TH2F* helveb = new TH2F("helveb","el v eb",1000,-0.001,0.003,1000,0.02,0.04);
+  TH2F* helveb = new TH2F("helveb","el v eb",1000,0.0004,0.0016,1000,0.02,0.04);
+  TH1F* hprod = new TH1F("hprod","el * eb",1000,0.,0.00005);
 
   for(int i=0; i<nexp; i++) {  // loop over experiments
 
@@ -69,7 +70,7 @@ void toyMC_bck()
     //std::cout<<"bb="<<bb<<std::endl;
     hb->Fill(bb);
     helveb->Fill(el,bb);
-    
+    hprod->Fill(el*bb);
 
 
   } // end loop over experiments
@@ -78,6 +79,7 @@ void toyMC_bck()
   hel->Write();
   hb->Write();
   helveb->Write();
+  hprod->Write();
 }
 
 //------------------------------------------------------------------------------
