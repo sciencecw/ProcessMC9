@@ -14,10 +14,13 @@ int idbg=0;
 int nexp = 10000000;
 float eff_b_true = 0.03;
 float eff_l_true = 0.001;
-float ave_n_jet1 = 200000;
-float ave_n_jet2 = 50000;
+
+float ave_n_jet1 = 2278780;
 float ave_frac_b1 = 0.005;
 float err_ave_frac_b1 = 0.;
+
+
+float ave_n_jet2 = 40944;
 float ave_frac_b2 = 0.23;
 float err_ave_frac_b2 = 0.0;
 
