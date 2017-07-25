@@ -15,7 +15,7 @@
 
 
 // for codes like EMJselect
-float goalintlum=40.;
+float goalintlum=20.;
 int nbin;
 int ibin;
 float* xsec;

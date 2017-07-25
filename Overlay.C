@@ -4,19 +4,19 @@
 #include "TH1.h"
 #include "TH1F.h"
 
-int dolog=1;
+int dolog=0;
 void Overlay() 
 { 
-  char* hname ="hdjettrkip";
-  char* atitle = "2D ip of tracks associated to jets";
+  char* hname ="hntrk1nm1";
+  char* atitle = "number of tracks with pt>1 GeV";
 
   //  TFile *f1 = new TFile("SumHistsQQCD.root");
   //TFile *f2 = new TFile("SumHistsWMCtSkim.root");  
   //TFile *f3 = new TFile("SumHistsWSkim.root");  
-  TFile *f1 = new TFile("SumHists74.root");
+  TFile *f1 = new TFile("./files_modB/SumHistMODELB.root");
   //TFile *f2 = new TFile("SumHistsModelA.root");  
   //TFile *f2 = new TFile("SumHistsDATA.root");  
-  TFile *f2 = new TFile("SumHists80.root");  
+  TFile *f2 = new TFile("/data/users/eno/em8/CMSSW_8_0_26_patch1/src/ProcessMC3/SumHistsModelB.root");  
 
  
   gStyle->SetOptStat(0);
@@ -152,8 +152,8 @@ C_pt->Scale(1/aaC);
  // lgd->AddEntry(C_pt, "data W to mu", "l");
 
 
-  lgd->AddEntry(A_pt, "modelB 74", "l");
-  lgd->AddEntry(B_pt, "ModelB 80", "l");
+  lgd->AddEntry(A_pt, "modelB 80", "l");
+  lgd->AddEntry(B_pt, "ModelB 74", "l");
   //lgd->AddEntry(C_pt, "ModelBx500", "l");
 
  lgd->Draw();
@@ -165,12 +165,12 @@ C_pt->Scale(1/aaC);
   // mode generally : 
   //   iPos = 10*(alignement 1/2/3) + position (1/2/3 = left/center/right)
    
-  writeExtraText = true;       // if extra text
+  writeExtraText = false;       // if extra text
   extraText  = "Preliminary";  // default extra text is "Preliminary"
 
   int iPeriod = 0;    // 1=7TeV, 2=8TeV, 3=7+8TeV, 7=7+8+13TeV, 0=free form (uses lumi_sqrtS)
    int iPos  = 11;
-  CMS_lumi( canv, iPeriod, iPos );
+   //CMS_lumi( canv, iPeriod, iPos );
   
   canv->Update();
   canv->RedrawAxis();

@@ -28,7 +28,7 @@ float DmaxIPcut=-1;
 float Djetacut = 2.;
     // dont forget there is a hidden cut nalmostemergin<4!!!!!!!!!!!!!!!!!
 int Dnemcut=2;
-int Dntrk1=4;
+int Dntrk1=0;
     
 float Dmetcut=-1;
 float Dmasscut=3000000000;

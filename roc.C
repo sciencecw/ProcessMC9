@@ -63,7 +63,7 @@ void roc()
   //TFile *f1 = new TFile("SumHistsWMCtSkim.root");  
   //TFile *f1 = new TFile("SumHistsWSkim.root");  
   //TFile *f1 = new TFile("SumHists80.root");
-  TFile *f1 = new TFile("SumHistsModelA.root");  
+  TFile *f1 = new TFile("files_modB/SumHistMODELB.root");  
   //TFile *f1 = new TFile("SumHistsModelB.root");  
   //TFile *f1 = new TFile("SumHistsDATA.root");  
   //TFile *f1 = new TFile("SumHists80.root");  

@@ -7,20 +7,20 @@
 int dolog=0;
 void Overlay2() 
 { 
-  char* atitle = "fraction tracks ipsig<4 ";
-  char* hname1 = "ham2dfbpt1";
-  char* hname2 = "ham2dfbpt2";
-  char* hname3 = "ham2dfbpt3";
+  char* atitle = "alpha 2d sig ";
+  char* hname1 = "ham2dfdk";
+  char* hname2 = "ham2dfd";
+  //char* hname3 = "ham2dfbpt3";
     //  char* lgd1 = "after preselection";
     //char* lgd2 = "after final selection";
-  char* lgd1 = "b quarks 100<pt<300";
-  char* lgd2 = "b quarks 300<pt<400";
-  char* lgd3 = "b quarks pt>600";
+  char* lgd1 = "dark quarks";
+  char* lgd2 = "down quarks";
+  //char* lgd3 = "b quarks pt>600";
   //char* lgd3 = "pt>600";
 
   //TFile *f1 = new TFile("SumHistsQCD.root");
   //TFile *f1 = new TFile("SumHistsDebug.root");
-  TFile *f1 = new TFile("SumHistsQQCD.root");
+  TFile *f1 = new TFile("./files_modB/SumHistMODELB.root");
   //TFile *f1 = new TFile("SumHistsWMCtSkim.root");  
   //TFile *f1 = new TFile("SumHistsWSkim.root");  
   //TFile *f1 = new TFile("SumHists80.root");
@@ -118,7 +118,7 @@ std::cout<<" first entries is "<<aaA<<std::endl;
 std::cout<<" second entries is "<<aaB<<std::endl;
   B_pt->Scale(1/aaB);
 
-  
+  /*
   std::cout<<"getting third"<<std::endl;
   TH1F *C_pt = static_cast<TH1F*>(f1->Get(hname3)->Clone());
   std::cout<<"ha"<<std::endl;
@@ -127,7 +127,7 @@ std::cout<<" second entries is "<<aaB<<std::endl;
   double aaC = C_pt->Integral();
 std::cout<<" third entries is "<<aaC<<std::endl;
   C_pt->Scale(1/aaC);
-  
+  */
 
   double max = std::max(A_pt->GetMaximum(),B_pt->GetMaximum());
   //  max = std::max(max,C_pt->GetMaximum());
@@ -152,18 +152,18 @@ std::cout<<" third entries is "<<aaC<<std::endl;
   B_pt->SetStats(0);
   B_pt->Draw("same");
 
-  
+  /*  
   C_pt->SetLineColor(3);
   C_pt->SetLineWidth(3);
   C_pt->SetStats(0);
   C_pt->Draw("same");
-  
+  */
   
 
 
   lgd->AddEntry(A_pt, lgd1, "l");
   lgd->AddEntry(B_pt, lgd2, "l");
-  lgd->AddEntry(C_pt, lgd3, "l");
+  //lgd->AddEntry(C_pt, lgd3, "l");
   //lgd->AddEntry(C_pt, "ModelBx500", "l");
 
  lgd->Draw();
