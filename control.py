@@ -41,7 +41,7 @@ else:
   parser.print_usage()
   exit(1)
 
-
+isOtherModel=False
 if options.sample=="QQCD":
   dirname="files_QQCD"
   prefix = "QQCD"
@@ -59,9 +59,17 @@ elif options.sample=="ModelB":
   prefix = "modelB"
   nbin=1
 else:
-  print("Input sample not recognized!")
-  parser.print_usage()
-  exit(1)
+  with open('configs/models.txt') as myfile:
+     if options.sample in myfile.read():
+         print "othermodel: ", options.sample
+	 prefix=options.sample
+         dirname="files_"+prefix
+	 nbin=1
+         isOtherModel=True
+     else:
+ 	 print("Input sample not recognized!")
+	 parser.print_usage()
+	 exit(1)
 
 #Create output directory; ask what to do if it exists already
 if options.mode==0:
@@ -93,6 +101,8 @@ print "number of bins is "+str(nbin)
 for i in range(0,nbin):
   print "i="+str(i+1)
   parmsfile=hostarea+"configs/parms_"+prefix+".txt"
+  if isOtherModel: 
+	parmsfile=hostarea+"configs/parms_7480x_"+prefix+".txt"
   name = "files-"+prefix+"-"+str(i+1)
   
   jdlfile = open(hostarea2+"condor-jobs-"+str(options.mode)+"_"+name+".jdl","w")

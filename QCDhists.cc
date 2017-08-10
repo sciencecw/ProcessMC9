@@ -24,14 +24,14 @@ float Dpt2cut=200;
 float Dpt3cut=200;
 float Dpt4cut=100;
 float Dalphacut=0.04;
-float DmaxIPcut=-1;
+float DmaxIPcut=0.04;
 float Djetacut = 2.;
     // dont forget there is a hidden cut nalmostemergin<4!!!!!!!!!!!!!!!!!
 int Dnemcut=2;
 int Dntrk1=0;
     
-float Dmetcut=-1;
-float Dmasscut=3000000000;
+float Dmetcut=50;
+float Dmasscut=700;
 float Dtheta2dcut=-1;
   
 
