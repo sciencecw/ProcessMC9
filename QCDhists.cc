@@ -5,6 +5,10 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <TKey.h>
+#include <TCollection.h>
+#include <TObject.h>
+#include <TList.h>
 
 #include <fstream>
 #include "vector"
@@ -18,21 +22,21 @@ using std::vector;
 
   
     // cuts
-float DHTcut=1000;
-float Dpt1cut=400;
-float Dpt2cut=200;
-float Dpt3cut=200;
-float Dpt4cut=100;
-float Dalphacut=0.04;
-float DmaxIPcut=0.04;
+float DHTcut=800;
+float Dpt1cut=300;
+float Dpt2cut=100;
+float Dpt3cut=100;
+float Dpt4cut=50;
+float Dalphacut=2;
+float DmaxIPcut=0.03;
 float Djetacut = 2.;
     // dont forget there is a hidden cut nalmostemergin<4!!!!!!!!!!!!!!!!!
 int Dnemcut=2;
-int Dntrk1=0;
+int Dntrk1=1;
     
-float Dmetcut=50;
-float Dmasscut=700;
-float Dtheta2dcut=-1;
+float Dmetcut=0.;
+float Dmasscut=2000;
+float Dtheta2dcut=0.;
   
 
 int EMJ16003(bool otfile, bool hasPre, const char* inputfilename,const char* outputfilename);
@@ -42,57 +46,13 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	      int ntrk1cut, int NemergingCut, bool blind,
 	      float Dmetcut, float Dmass, float Dmasscut, float Dtheta2dcut
               );
+std::vector<std::string> ListTH(std::string outdir,std::string binname,int htype);
 void  HistNorm(std::string outdir, vector<double>& norm,int nbin,float* xsec, int* nfiles, std::string* binnames);
 TH1F* HistMan(std::string outdir, float goalintlum,std::string thisHIST,vector<double>& histnorm, vector<double>& outnorm,int nbin,float* xsec, int* nfiles, std::string* binnames,bool donorm);
 
 TH2F* HistMan2(std::string outdir, float goalintlum,std::string thisHIST,vector<double>& histnorm, vector<double>& outnorm,int nbin,float* xsec, int* nfiles, std::string* binnames,bool donorm);
 
 
-
-const int nhist=190; 
-
-std::string histnames[nhist]={
-        "count","acount","hjetcut","hjetchf","h_nemg",
-        "hnjet","hpt","heta","heta2","halpha",
-        "H_T","H_T2","hpt1","hpt2","hpt3",
-        "hpt4","hbcut_ntrkpt1","hacut_ntrkpt1","hbcut_nef","hacut_nef",
-        "hbcut_cef","hacut_cef","hbcut_alphamax","hacut_alphamax","hbcut_theta2d",
-        "hbcut_maxip","hHTnm1",
-        "hpt1nm1","hpt2nm1","hpt3nm1","hpt4nm1","halphanm1",
-        "hmaxipnm1","hnHitsnm1","hntrk1nm1","hnemnm1",
-	"hmetnm1","hmassnm1","htheta2D1nm1","htheta2D2nm1","htheta2D3nm1","htheta2D4nm1",
-        "hipXYEJ",
-        "hipXYnEJ","htvwEJ","htvw","hipXYSigEJ","hipXYSignEJ",
-        "hmaxipXYEJ","hmaxipXYnEJ","hmeanipXYEJ","hmeanipXYnEJ","hnmaxipnm1",
-        "hn2maxipnm1","H_T3","H_T4","hjptfrb","hjptfra1",
-        "hjptfra2","hjptfrbc","hjptfra1c","hjptfra2c","hjptb",
-        "hjpta","haMgj","hHTko","hpt1ko","hpt2ko",
-        "hpt3ko","hpt4ko","hmass","hlogmedipXYSigEJ","hlogmedipXYSignEJ","hlogmeanipXYSigEJ","hlogmeanipXYSignEJ",
-        "hmedipXYSigEJ","hmedipXYSignEJ","hmeanipXYSigEJ","hmeanipXYSignEJ","hmedipXYEJ","hmedipXYnEJ","hmeanipXYEJ","hmeanipXYnEJ",
-	"hdkjetam","hdkjetmeanip","hdkjetntr","hdkjetmaxip","hdkjettrkip","hdkjettrkips","hdkjettrgip","hdkjettrkdr","hdkjetamo","hdjetamo",
-	"hdkjettrkw",
-	"hdjetam","hdjetmeanip","hdjetntr","hdjetmaxip","hdjettrkip","hdjettrkips","hdjettrgip","hdjettrkdr","hdjetam2d","hdkjetam2d",
-	"hdjettrkw","hmeanz","hmeanzfa","hmeanzpa","hmeanzd","hmeanzdk","hmzamd","hmznamd","h2damd","h2dnamd","h2dpa","h2dfa","hntrkpt1zmpa","hntrkpt1zmfa","ham2dfd","ham2dfdk",
-        "ham2dfb","ham2dfgbb","ham2dfg","ham2dfud",
-	"ham2dfbpt1","ham2dfbpt2","ham2dfbpt3",
-	"ham2dfudpt1","ham2dfudpt2","ham2dfudpt3",
-	"hbigb","hpvpre","hpvfinal","hnvtxpre","hnvtxfinal","hntrkpre","hntrkfinal",
-	"hjetptfrpre","hjetptfrfinal","hjntrkpre","hjntrkfinal","hdzpre","hdzfinal",
-	"hfpilepre","hfpilefinal","hdzjpre","hdzjfinal","hptmaxpre","hptmaxfinal",
-	"hsum2Dfpre","hsum2Dffinal","hsum2Dfd","hsum2Dfdk",
-	"hptallpre","hptudpre","hptspre","hptcpre","hptbpre","hptgpre","hptgbbpre",
-	"hptallpree","hptudpree","hptspree","hptcpree","hptbpree","hptgpree","hptgbbpree",
-	"hptallfinal","hptudfinal","hptsfinal","hptcfinal","hptbfinal","hptgfinal","hptgbbfinal",
-	"hptallfinale","hptudfinale","hptsfinale","hptcfinale","hptbfinale","hptgfinale","hptgbbfinale",
-	"hptallfinal2","hptudfinal2","hptsfinal2","hptcfinal2","hptbfinal2","hptgfinal2","hptgbbfinal2",
-	"hmeanzpre","hmeanzfinal"
-    };
-
-  const int nhist2=19;
-  std::string histnames2[nhist2]={
-      "aMip","haMvjpt","haMvHT","haMvnvtx","aMbh","adkwvd0","adwvd0",
-      "adkwviz","adwviz","adk2Dr0","ad2Dr0","hdkipphi","hdipphi","aMbh2D","aMbh2Daem","aMbh2Dd","aMbh2Ddk","aMmzd","aMmzdk"
-    };
 
 
 
@@ -104,10 +64,20 @@ std::string sumhistname,
 
   std::string inputfile;
   std::string outputfile;
+    // first make histograms for each file in each bin for the qcd sample
+  if(imode==2) {
+	for (int i=0;i<nbin;i++) nfiles[i]=1;
+	sumhistname="Sum2"+sumhistname;
+	std::cout<<"MODE2"<<std::endl;
+	std::cout<<outdir<<std::endl;
+	outdir+="Sum";
+	std::cout<<outdir<<std::endl;
+  }
+
 
   std::string bbname = outdir.c_str();
-
-    // first make histograms for each file in each bin for the qcd sample
+  std::cout<<"entering QCDhists: MODE "<<imode<<std::endl;
+  std::cout<<"ibin "<<ibin<<" nbin "<<nbin<<" sumhistname "<<sumhistname<<std::endl;
 
   if(imode==0) {
 
@@ -131,6 +101,7 @@ std::string sumhistname,
         itmp = EMJ16003(true,hasPre,inputfile.c_str(),outputfile.c_str());
       }
 	  linecounter +=1;
+    std::cout<<"passcounts: "<<itmp<<std::endl;
     }  // end of loop over files
 
 
@@ -156,7 +127,15 @@ std::string sumhistname,
   for(int i=0;i<nbin;i++){
     normhst->AddBinContent(i+1,norm[i]);
   }
-
+   std::vector<std::string> histnames = ListTH(bbname,binnames[0],1);
+   std::vector<std::string> histnames2 = ListTH(bbname,binnames[0],2);
+   //std::vector<std::string> histnames  = (std::vector<std::string>) histnamesall[0];
+  // std::vector<std::string> histnames2 = (std::vector<std::string>) histnamesall[1];
+   
+   int nhist = histnames.size();
+   int nhist2 = histnames2.size();
+   std::cout<<"num of TH1:"<< nhist<<std::endl;
+   std::cout<<"num of TH2:"<< nhist2<<std::endl;
 
     //make and  output summed and renormalized histograms
   std::cout<<"normalizing histograms"<<std::endl;
@@ -170,7 +149,7 @@ std::string sumhistname,
   std::vector<TH2F*> vv2(nhist2);
   vector<double> outnorm2(nbin);
   for(int i=0;i<nhist2;i++) {
-    std::cout<<" enering Histman2 with i = "<<i<<": "<<histnames[i]<<std::endl;
+    std::cout<<" enering Histman2 with i = "<<i<<": "<<histnames2[i]<<std::endl;
     vv2[i]=HistMan2(bbname,goalintlum,histnames2[i],norm,outnorm2,nbin,xsec,nfiles,binnames,donorm);
   }
 
@@ -188,6 +167,7 @@ std::string sumhistname,
   std::cout<<"outputting histograms"<<std::endl;
   outputfile=bbname+sumhistname;
   TFile out(outputfile.c_str(),"RECREATE");
+   std::cout<<"Openning & writing to File: "<<outputfile<<std::endl;
   normhst->Write();
   countclone->Write();
   for(int i=0;i<nhist;i++) {
@@ -206,6 +186,37 @@ std::string sumhistname,
 
 
 
+std::vector<std::string> ListTH(std::string outdir,std::string binname,int htype) {
+            std::string inputfile=outdir+"histos"+binname+"_0.root";
+	std::vector<std::string> thlist={};
+	TFile* fin = new TFile(inputfile.c_str()) ;
+
+TList* list = fin->GetListOfKeys() ;
+if (!list) { std::cout<<"<E> No keys found in file"<<std::endl; exit(1) ; }
+TIter next(list) ; TKey* key ; TObject* obj ;
+    
+while (( key = (TKey*)next() )) {
+  obj = key->ReadObj() ;
+  if (    (strcmp(obj->IsA()->GetName(),"TProfile")!=0)
+       && (!obj->InheritsFrom("TH2"))
+ && (!obj->InheritsFrom("TH1")) 
+     ) {
+    std::cout<<"<W> Object "<<obj->GetName()<<" is not 1D or 2D histogram: will not be converted\n" ;
+  }
+if (obj->InheritsFrom("TH2")){
+    if (htype==2){
+	std::cout<<"TH2 Histo name: "<<obj->GetName()<<" title: "<< obj->GetTitle()<<std::endl;
+   	thlist.push_back(std::string(obj->GetName())); 
+    }
+} else if (obj->InheritsFrom("TH1") && htype==1){
+    std::cout<<"TH1 Histo name: "<<obj->GetName()<<" title: "<< obj->GetTitle()<<std::endl;
+   thlist.push_back(std::string(obj->GetName())); 
+}
+}
+
+return thlist;	
+}
+
 TH1F* HistMan(std::string outdir, float goalintlum,std::string thisHIST,vector<double>& norm,vector<double>& outnorm,int nbin,float* xsec, int* nfiles, std::string* binnames,bool donorm) {
 
     std::string inputfile;
@@ -217,6 +228,7 @@ TH1F* HistMan(std::string outdir, float goalintlum,std::string thisHIST,vector<d
         for(int j=0;j<nfiles[i];j++) { //for each file for that bin
             inputfile=outdir+"histos"+binnames[i]+"_"+std::to_string(j)+".root";
             TFile* in = new TFile(inputfile.c_str());
+    		std::cout<<"Openning File: "<<inputfile<<std::endl;
             if (!in->GetListOfKeys()->Contains(thisHIST.c_str())) return (new TH1F(thisHIST.c_str(),"dummy empty hist",10,0.,10.));
 
             if(j==0) {
@@ -268,6 +280,7 @@ TH2F* HistMan2(std::string outdir, float goalintlum,std::string thisHIST,vector<
         for(int j=0;j<nfiles[i];j++) { //for each file for that bin
             inputfile=outdir+"histos"+binnames[i]+"_"+std::to_string(j)+".root";
             TFile* in = new TFile(inputfile.c_str());
+    		std::cout<<"Openning File: "<<inputfile<<std::endl;
             if(j==0) {
                 sum[i] = *(static_cast<TH2F*>(in->Get(thisHIST.c_str())->Clone()));
             } else {
@@ -307,7 +320,7 @@ TH2F* HistMan2(std::string outdir, float goalintlum,std::string thisHIST,vector<
 
 void  HistNorm(std::string outdir, vector<double>& norm,int nbin,float* xsec, int* nfiles, std::string* binnames) {
 
-    std::cout<<"entering HistNorm"<<std::endl; 
+    std::cout<<"entering HistNorm with nfiles "<<nfiles[0]<<std::endl; 
 
     std::string inputfile;
     TFile * in;

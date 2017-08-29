@@ -1,7 +1,7 @@
 1  # has histogram eventCountPreTrigger
 3  # number of HT bins used in generation
 1064000 121500 25420  # cross section for each bin
-761 675 266  # number of files for each bin
+761 653 266  # number of files for each bin
 QCD_HT1000to1500 QCD_HT1500to2000 QCD_HT2000toInf   # name for each bin
 configs/QCD_HT1000to1500_80X_config.txt configs/QCD_HT1500to2000_80X_config.txt configs/QCD_HT2000toInf_80X_config.txt  # config files for location of ntuples
 SumHistQCD  # for summary hist

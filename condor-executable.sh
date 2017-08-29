@@ -40,6 +40,7 @@ FINAL_LOG=`echo $FINAL_PREFIX_NAME.log`
 #
 # run c
 #
+echo "./main $RUN_MODE $BLIND_MODE $I16_MODE $THEMASS >> $FINAL_LOG 2>&1"
 ./main $RUN_MODE $BLIND_MODE $I16_MODE $THEMASS >> $FINAL_LOG 2>&1
 
 

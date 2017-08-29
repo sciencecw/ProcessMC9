@@ -1,0 +1,7 @@
+1  # has histogram eventCountPreTrigger
+1  # number of HT bins used in generation
+18.45  # cross section for each bin
+10  # number of files for each bin
+mass_X_d_1500_mass_pi_d_2_tau_pi_d_150_7480X   # name for each bin
+configs/model_7480X/mass_X_d_1500_mass_pi_d_2_tau_pi_d_150_7480X_config.txt # config files for location of ntuples
+SumHistmass_X_d_1500_mass_pi_d_2_tau_pi_d_150_7480X  # for summary hist

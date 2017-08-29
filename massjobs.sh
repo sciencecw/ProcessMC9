@@ -1,1 +1,1 @@
-condor_submit files_mass_X_d_800_mass_pi_d_5_tau_pi_d_5/condor-jobs-0_files-mass_X_d_800_mass_pi_d_5_tau_pi_d_5-1.jdl
+condor_submit files_modA_rerun/condor-jobs-1_files-modelA-1.jdl
