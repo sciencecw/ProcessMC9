@@ -1,4 +1,4 @@
-#include <fstream>
+/*#include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -11,8 +11,9 @@
 #include <TChain.h>
 #include <TFile.h>
 // global variables
+*/
 
-
+#include "paramSet.h"
 
 // for codes like EMJselect
 float goalintlum=20.;
@@ -30,7 +31,7 @@ bool b16003=false;
 float themass=1000.;
 
 
-void  QCDhists(int imode, std::string outdir, int ibin, float goalintlum,
+/*void  QCDhists(int imode, std::string outdir, int ibin, float goalintlum,
 int nbin, float* xsec, int* nfiles, std::string* binnames,
 std::string* aaname,std::string sumhist,
 bool hasPre,bool donorm, bool blind, bool b16003,float themass);
@@ -42,6 +43,7 @@ std::string decomment(std::string line) {
       line.erase(n);
     return line;
 }
+*/
 
 int main(int argc, char *argv[])
 { 
@@ -53,6 +55,31 @@ int main(int argc, char *argv[])
 
   std::cout<<"bin is "<<ibin<<std::endl;
   std::cout<<"input file is "<<parmfile<<std::endl;
+  Parmset ps;
+  ps.HTcut=1000;
+  ps.pt1cut=300;
+  ps.pt2cut=300;
+  ps.pt3cut=250;
+  ps.pt4cut=150;
+  ps.jetacut=2; // always = 2
+
+  ps.a3dcut=0.25;
+  ps.ahatecut=15;
+  ps.medIPcut=0.05;
+  ps.NemfracCut=0.9; //always 0.9
+  ps.CemfracCut=0.9; //always 0.9
+  ps.ntrk1cut=1;
+  ps.pvz_cut=50;
+
+  ps.NemergingCut=2;
+  ps.metcut=0;
+  ps.mass=800;       
+  ps.masscut=300;
+  ps.theta2dcut=0;
+
+ // ipsigcut=2;
+
+  printParam(ps); 
 
   std::ifstream infile;
   std::string line;
@@ -108,11 +135,10 @@ int main(int argc, char *argv[])
 
 
   }
-  std::string haha(outdir);
-  QCDhists(imode,haha,ibin,goalintlum,
-nbin,xsec,nfiles,binnames,
-filesname,sumhist,
-hasPre, donorm, blind, b16003, themass);
+  std::string odir(outdir);
+  QCDhists(imode,odir,ibin,goalintlum,
+nbin,xsec,nfiles,binnames, filesname,
+sumhist, hasPre, donorm, blind, ps);
 
 
 

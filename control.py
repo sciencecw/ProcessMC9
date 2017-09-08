@@ -39,7 +39,7 @@ if options.ntuples=='74X':
 
 #Set the output directory name and parameter file based on the sample you are running over
 dirname=""
-dirsuffix="_rerun"
+dirsuffix="_rerun1"
 prefix=""
 nbin=""
 if options.mode==0:

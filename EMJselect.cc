@@ -1,4 +1,4 @@
-#include <iostream>
+/*#include <iostream>
 #include <iomanip>
 #include <locale>
 
@@ -15,6 +15,9 @@ using std::vector;
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
+*/
+
+#include "paramSet.h"
 
 TTree          *fChain;   //!pointer to the analyzed TTree or TChain               
 Int_t           fCurrent; //!current Tree number in a TChain                       
@@ -22,18 +25,20 @@ Int_t           fCurrent; //!current Tree number in a TChain
 
 int iDBG=0;
 int iSDBG=1;
-//float pilecut=1.5;
-float pilecut=100000;
+/*//float pilecut=1.5;
 //float pilecut2=1.5;
+// temporary for a3d related cuts
+float a3dcut=0.1;
+float ahatecut=8;
+*/
+float pilecut=100000;
 float pilecut2=10000;
+float deltaz=0.01;
+float Njetcut=4;
+float alphaMaxcut=0.03; //for plotting EJ vs nEJ plots only
+
 //Used for overflow
 float epsilon=0.000001;
-// temporary for a3d related cuts
-float deltaz=0.01;
-float a3dcut=0.1;
-float Njetcut=4;
-float ahatecut=8;
-
 Double_t OverFlow(Double_t value, TH1* ahist) {
   return std::min(value, ((ahist->GetXaxis())->GetXmax())-epsilon);
 }
@@ -52,9 +57,9 @@ float DeltaR(float eta1, float phi1, float eta2, float phi2) {
 
 
 
-int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* outputfilename,
-	      float HTcut, float pt1cut, float pt2cut, float pt3cut, float pt4cut, float jetacut,float alphaMaxcut, float medIPcut, float NemfracCut,float CemfracCut,int ntrk1cut, int NemergingCut,bool blind,
-	      float Dmetcut, float Dmass, float Dmasscut, float Dtheta2dcut
+int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* outputfilename, const Parmset &ps, bool blind
+	      //float HTcut, float pt1cut, float pt2cut, float pt3cut, float pt4cut, float jetacut,float alphaMaxcut, float medIPcut, float NemfracCut,float CemfracCut,int ntrk1cut, int NemergingCut,bool blind,
+	      //float Dmetcut, float Dmass, float Dmasscut, float Dtheta2dcut
 ) {
   // "ntuple.root", "histos.root"
   // suggest cuts 1000., 400.,200.,125.,50.,0.2,0.9,0.9,0,1
@@ -82,7 +87,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
   TTree *tt = (TTree*)f->Get("emJetAnalyzer/emJetTree");
 
-  Int_t nVtx, event, lumi, run, nTrueInt, nTracks, pv_indexInColl;
+  Int_t nVtx, event, lumi, run, nTrueInt, nTracks;
   Bool_t hltbit;
   Float_t met_pt, met_phi;
 
@@ -245,6 +250,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     *adkwvd0,*h2ipvz,*adkwviz,
     *adwvd0,*adwviz,*adk2Dr0,*ad2Dr0,*hdkipphi,*hdipphi,*hht4
     ,*h2ipvzd, *h2ipvzb, *h2ipvzud, *h2ipvzdk
+    ,*hmipahated,*hmipahateud,*hmipahatedk,*hmipahateb
   ;
 
   if(otfile) {
@@ -525,6 +531,10 @@ h2ipvzdk = new TH2F("h2ipvzdk","ip2dsig vs pvz-track_ref_z dark jets",30,-10,10,
   hht4 = new TH2F("hht4","HT of all jets vs HT of leading 4 jets",250,0,2500,250,0,2500);
 
 
+hmipahated  = new TH2F("hmipahated","median 2DIP vs ahate down quark jets " ,100,0.,10.,100,0,100);
+hmipahateb  = new TH2F("hmipahateb","median 2DIP vs ahate b quark jets "    ,100,0.,10.,100,0,100);
+hmipahateud = new TH2F("hmipahateud","median 2DIP vs ahate u,d quark jets " ,100,0.,10.,100,0,100);
+hmipahatedk = new TH2F("hmipahatedk","median 2DIP vs ahate dark quark jets ",100,0.,10.,100,0,100);
   }
 
   //read all entries and fill the histograms
@@ -735,7 +745,7 @@ h2ipvzdk = new TH2F("h2ipvzdk","ip2dsig vs pvz-track_ref_z dark jets",30,-10,10,
 	//if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
 	if((track_sources[itrack]==0)) {
 	  sumptallnz+=track_pts[itrack];
-	  if (fabs(pv_z->at(0)-track_ref_zs[itrack])<pilecut) {  // effectively turned off due to large cut value
+	  if (fabs(pv_z->at(0)-track_ref_zs[itrack])<ps.pilecut) {  // effectively turned off due to large cut value
 	    tracks_srczero += 1.0;
 	    if(track_pts[itrack]>ptmaxtrk) {
 	      ptmaxtrk=track_pts[itrack];
@@ -761,9 +771,9 @@ h2ipvzdk = new TH2F("h2ipvzdk","ip2dsig vs pvz-track_ref_z dark jets",30,-10,10,
 	    float ahate =ahate1*ahate1+ahate2*ahate2;
 	    ahate=sqrt(ahate);
 	    //if(fabs(track_ipXYSigs[itrack])<4) sumpt2Df+=track_pts[itrack];
-	    if(ahate<ahatecut) sumpt2Df+=track_pts[itrack]; //a3d calculation
+	    if(ahate<ps.ahatecut) sumpt2Df+=track_pts[itrack]; //a3d calculation
 	    if(fabs(track_ipXYSigs[itrack])<2) sum2Df+=1.;
-	    if(fabs(pv_z->at(0)-track_ref_zs[itrack])<pilecut2) sumpile+=track_pts[itrack];
+	    if(fabs(pv_z->at(0)-track_ref_zs[itrack])<ps.pilecut2) sumpile+=track_pts[itrack];
  	    if(track_pvWeights[itrack]>0) sumpt+=track_pts[itrack];
 	    if(fabs(track_ipXYs[itrack])<0.08) sumpt2D+=track_pts[itrack];
 	    if(otfile) htvw->Fill(OverFlow(track_pvWeights[itrack],htvw));
@@ -942,54 +952,52 @@ h2ipvzdk = new TH2F("h2ipvzdk","ip2dsig vs pvz-track_ref_z dark jets",30,-10,10,
       vector<float> track_ref_zs = track_ref_z->at(ij);
 	if(otfile) hjetcut->Fill(0.5);
 	if(otfile) hjetcuta->Fill("All",1);
-
-	if(fabs(jet_eta->at(ij))<jetacut) { // jet eta cut
+	if(fabs(jet_eta->at(ij))<ps.jetacut) { // jet eta cut
 	    if(otfile) hjetcut->Fill(1.5);
-	if(otfile) hjetcuta->Fill("Eta",1);
-
+	    if(otfile) hjetcuta->Fill("Eta",1);
 	    if(otfile) hbcut_nef->Fill(OverFlow(jet_nef->at(ij),hbcut_nef));
-	    if(jet_nef->at(ij)<NemfracCut) {  // neutral fraction
-	      if(otfile) hacut_nef->Fill(OverFlow(jet_nef->at(ij),hacut_nef));
-	    if(otfile) hjetcut->Fill(2.5);
-	if(otfile) hjetcuta->Fill("nef",1);
-
-	    if(otfile) hbcut_ntrkpt1->Fill(OverFlow(jet_ntrkpt1[ij],hbcut_ntrkpt1));
-	    if(jet_ntrkpt1[ij]>ntrk1cut) {  // tracks pt>1
+	    if(jet_nef->at(ij)<ps.NemfracCut) {  // neutral fraction
+	        if(otfile) hacut_nef->Fill(OverFlow(jet_nef->at(ij),hacut_nef));
+	        if(otfile) hjetcut->Fill(2.5);
+	        if(otfile) hjetcuta->Fill("nef",1);
+	        if(otfile) hbcut_ntrkpt1->Fill(OverFlow(jet_ntrkpt1[ij],hbcut_ntrkpt1));
+	    if(jet_ntrkpt1[ij]>ps.ntrk1cut) {  // tracks pt>1
 	      if(otfile) hacut_ntrkpt1->Fill(OverFlow(jet_ntrkpt1[ij],hacut_ntrkpt1));
 	      if(otfile) hjetcut->Fill(3.5);
 	if(otfile) hjetcuta->Fill("ntrk1",1);
 
 	      if(otfile) hbcut_cef->Fill(OverFlow(jet_cef->at(ij),hbcut_cef));
-	      if(jet_cef->at(ij)<CemfracCut) {  //charged fraction
+	      if(jet_cef->at(ij)<ps.CemfracCut) {  //charged fraction
 	        if(otfile) hacut_cef->Fill(OverFlow(jet_cef->at(ij),hacut_cef));
 	        if(otfile) hjetcut->Fill(4.5);
 		if(otfile) hjetcuta->Fill("cef",1);
 
-		//if(jet_fpt[ij]<0.6) {
-		if(jet_fpt[ij]<10000.) {
+		if(jet_fpt[ij]<0.6) {
+		//if(jet_fpt[ij]<10000.) {
 	        if(otfile) hjetcut->Fill(5.5);
 		if(otfile) hjetcuta->Fill("fpt",1);
 
-		if(jet_fnpile[ij]>-1.) {
-		//if(jet_fnpile[ij]>0.4) {
+		//if(jet_fnpile[ij]>-1.) {
+		if(jet_fnpile[ij]>0.4) {
 
 		  //if(jet_ptmax[ij]<10000) {
-		  if(jet_ptmax[ij]<100000000) {
-
+		  //if(jet_ptmax[ij]<100000000) {
+		if (true){
 	 	    basicjet[ij]=true;
 		    if(ij<Njetcut) nbasicjet+=1;
 
 
 	            if(otfile) hbcut_alphamax->Fill(OverFlow(AM[ij],hbcut_alphamax));
-		    if(AM[ij]<alphaMaxcut) { // alpha max
+		if (true){    
+		//if(AM[ij]<alphaMaxcut) { // alpha max
 
-	              if(otfile) hacut_alphamax->Fill(OverFlow(AM[ij],hacut_alphamax));
-	              if(otfile) hjetcut->Fill(6.5);
-			if(otfile) hjetcuta->Fill("amax",1);
+	              //if(otfile) hacut_alphamax->Fill(OverFlow(AM[ij],hacut_alphamax));
+	              //if(otfile) hjetcut->Fill(6.5);
+			//if(otfile) hjetcuta->Fill("amax",1);
 		      almostemerging[ij]=true;
 		      if(ij<Njetcut) nalmostemerging=nalmostemerging+1;
 		      if(iDBG>2) {
-		        if(ij<Njetcut) {
+		      if(ij<Njetcut) {
 		          std::cout<<" an almost emerging jet "<<ij<<std::endl;
 		          std::cout<<" with r0 of "<<r0[ij]<<std::endl;
 		          std::cout<<" and pt of "<<jet_pt->at(ij)<<std::endl;
@@ -998,7 +1006,7 @@ h2ipvzdk = new TH2F("h2ipvzdk","ip2dsig vs pvz-track_ref_z dark jets",30,-10,10,
 
 		    }
 
-		    if(a3d[ij]<a3dcut) { //a3d
+		    if(a3d[ij]<ps.a3dcut) { //a3d
 			if(otfile) hjetcuta->Fill("a3d",1);
 		    if (true){ 
 		      //if(amax2Df2[ij]<0.3) {
@@ -1007,11 +1015,11 @@ h2ipvzdk = new TH2F("h2ipvzdk","ip2dsig vs pvz-track_ref_z dark jets",30,-10,10,
 
 
 	              if(otfile) hbcut_medip->Fill(OverFlow(rmed[ij],hbcut_medip));
-		      if(rmed[ij]>medIPcut) { // med IP cut
+		      if(rmed[ij]>ps.medIPcut) { // med IP cut
                         if(otfile) hjetcut->Fill(7.5);
 			if(otfile) hjetcuta->Fill("medIP",1);
 	                if(otfile) hbcut_theta2d->Fill(OverFlow(log10(jet_theta2D->at(ij)),hbcut_theta2d));
-		        if(jet_theta2D->at(ij)>Dtheta2dcut) {
+		        if(jet_theta2D->at(ij)>ps.theta2dcut) {
 			  if(otfile) hjetcuta->Fill("theta2d",1);
                           if(otfile) hjetcut->Fill(8.5);
 
@@ -1074,11 +1082,12 @@ h2ipvzdk = new TH2F("h2ipvzdk","ip2dsig vs pvz-track_ref_z dark jets",30,-10,10,
 
 
       bool PVZ=true;
-      if(fabs(pv_z->at(0))>20) PVZ=false;
+      //if(fabs(pv_z->at(0))>15) PVZ=false;
+      if(fabs(pv_z->at(0))>ps.pvz_cut) PVZ=false;
 
     // require at least 4 jets
     bool C4jet=true;
-    if(nbasicjet<4) C4jet=false;
+    if(nbasicjet<Njetcut) C4jet=false;
     // HT
     double HT=0.;
     for(int i=0;i<std::min(NNNjet,4);i++) {
@@ -1097,27 +1106,27 @@ h2ipvzdk = new TH2F("h2ipvzdk","ip2dsig vs pvz-track_ref_z dark jets",30,-10,10,
     if(otfile&&NNNjet>2&&hltbit) hpt3->Fill(OverFlow(jet_pt->at(2),hpt3));
     if(otfile&&NNNjet>3&&hltbit) hpt4->Fill(OverFlow(jet_pt->at(3),hpt4));
     bool CHT=false;
-    if(hltbit&&(HT>HTcut)) CHT=true;
+    if(hltbit&&(HT>ps.HTcut)) CHT=true;
     // jet pt
     bool Cpt1=false;
     bool Cpt2=false;
     bool Cpt3=false;
     bool Cpt4=false;
     if(NNNjet>0) {
-      if((jet_pt->at(0)>pt1cut)&&(fabs(jet_eta->at(0))<jetacut)) Cpt1=true;}
+      if((jet_pt->at(0)>ps.pt1cut)&&(fabs(jet_eta->at(0))<ps.jetacut)) Cpt1=true;}
     if(NNNjet>1) {
-      if((jet_pt->at(1)>pt2cut)&&(fabs(jet_eta->at(1))<jetacut)) Cpt2=true;}
+      if((jet_pt->at(1)>ps.pt2cut)&&(fabs(jet_eta->at(1))<ps.jetacut)) Cpt2=true;}
     if(NNNjet>2) {
-      if((jet_pt->at(2)>pt3cut)&&(fabs(jet_eta->at(2))<jetacut)) Cpt3=true;}
+      if((jet_pt->at(2)>ps.pt3cut)&&(fabs(jet_eta->at(2))<ps.jetacut)) Cpt3=true;}
     if(NNNjet>3) {
-      if((jet_pt->at(3)>pt4cut)&&(fabs(jet_eta->at(3))<jetacut)) Cpt4=true;}
+      if((jet_pt->at(3)>ps.pt4cut)&&(fabs(jet_eta->at(3))<ps.jetacut)) Cpt4=true;}
     // number emerging jets
     bool Cnem = true;
-    if(nemerging<NemergingCut) Cnem=false;
+    if(nemerging<ps.NemergingCut) Cnem=false;
 
     // almost emerging
     bool Canem =true;
-    //if(nalmostemerging>=4) Canem=false;
+    if(nalmostemerging>=4) Canem=false;
     
      
      double amass=0;
@@ -1175,10 +1184,10 @@ h2ipvzdk = new TH2F("h2ipvzdk","ip2dsig vs pvz-track_ref_z dark jets",30,-10,10,
 	  hmass->Fill(OverFlow(amass,hmass));
 
     bool Cmass = false;
-    if(fabs(amass-Dmass)<Dmasscut) Cmass=true;
+    if(fabs(amass-ps.mass)<ps.masscut) Cmass=true;
 
     bool Cmet = false;
-    if(met_pt>Dmetcut) Cmet = true;
+    if(met_pt>ps.metcut) Cmet = true;
 
 
     //blind
@@ -1329,6 +1338,7 @@ h2ipvzdk = new TH2F("h2ipvzdk","ip2dsig vs pvz-track_ref_z dark jets",30,-10,10,
 		  ahate1=ahate1/deltaz;
 		  float ahate =sqrt(ahate1*ahate1+ahate2*ahate2);
 		  hdkjettrkahate->Fill(OverFlow(ahate,hdkjettrkahate));
+		  hmipahatedk->Fill(rmed[i],ahate);
 		  hdkipphi->Fill(track_phis[itrack],track_ipXYs[itrack]);
 		  adkwvd0->Fill(track_pvWeights[itrack],track_ipXYs[itrack]);
 		  adkwviz->Fill(track_pvWeights[itrack],track_ipZs[itrack]);
@@ -1390,6 +1400,7 @@ h2ipvzdk = new TH2F("h2ipvzdk","ip2dsig vs pvz-track_ref_z dark jets",30,-10,10,
 		  ahate1=ahate1/deltaz;
 		  float ahate =sqrt(ahate1*ahate1+ahate2*ahate2);
 		  hdjettrkahate->Fill(OverFlow(ahate,hdjettrkahate));
+		  hmipahated->Fill(rmed[i],ahate);
 		  hdjettrkip->Fill(OverFlow(track_ipXYs[itrack],hdjettrkip));
 		  hdjettrkips->Fill(OverFlow(track_ipXYSigs[itrack],hdjettrkips));
 		  hdjettrkw->Fill(OverFlow(track_pvWeights[itrack],hdjettrkw));
@@ -1614,6 +1625,9 @@ h2ipvzdk = new TH2F("h2ipvzdk","ip2dsig vs pvz-track_ref_z dark jets",30,-10,10,
                   h2ipvzb->Fill(ahate2,ahate1);
 		  hpvztrzb->Fill(OverFlow(ahate1,hpvztrzb));
 		  hip2dsigb->Fill(OverFlow(ahate2,hip2dsigb));
+		  ahate1=ahate1/deltaz;
+		  float ahate =sqrt(ahate1*ahate1+ahate2*ahate2);
+		  hmipahateb->Fill(rmed[i],ahate);
   		}}
 	}
 	if(jet_pid_maxEt[i]==8) ham2dfgbb->Fill(OverFlow(a3d[i],ham2dfgbb));
@@ -1632,6 +1646,9 @@ h2ipvzdk = new TH2F("h2ipvzdk","ip2dsig vs pvz-track_ref_z dark jets",30,-10,10,
                   h2ipvzud->Fill(ahate2,ahate1);
 		  hpvztrzud->Fill(OverFlow(ahate1,hpvztrzud));
 		  hip2dsigud->Fill(OverFlow(ahate2,hip2dsigud));
+		  ahate1=ahate1/deltaz;
+		  float ahate =sqrt(ahate1*ahate1+ahate2*ahate2);
+		  hmipahateud->Fill(rmed[i],ahate);
   		}}
 	}
 
@@ -1826,7 +1843,7 @@ h2ipvzdk = new TH2F("h2ipvzdk","ip2dsig vs pvz-track_ref_z dark jets",30,-10,10,
 	} // iDBG
 
 	// some plots for events that pass all cuts
-	if(nemerging>=NemergingCut) {
+	if(nemerging>=ps.NemergingCut) {
 	  H_T3->Fill(OverFlow(HT,H_T3));   
 	  hpvfinal->Fill(OverFlow(pv_z->at(0),hpvfinal));
           hnvtxfinal->Fill(OverFlow(nVtx,hnvtxfinal));
@@ -1900,60 +1917,62 @@ h2ipvzdk = new TH2F("h2ipvzdk","ip2dsig vs pvz-track_ref_z dark jets",30,-10,10,
 
 
 
+    if(PVPT0) {
+    if(otfile) count->Fill("pv 0",1);
+    if(otfile) acount->Fill(1.5);
+
+    if(PVZ) {
+    if(otfile) count->Fill("pv z",1);
+    if(otfile) acount->Fill(2.5);
+
     if(C4jet) {
     if(otfile) count->Fill("4 jets",1);
-    if(otfile) acount->Fill(1.5);
+    if(otfile) acount->Fill(3.5);
 
     // calculate HT and require it greater than some cut value
     if(CHT) {
     if(otfile) count->Fill("HT",1);
-    if(otfile) acount->Fill(2.5);
+    if(otfile) acount->Fill(4.5);
     if(otfile) H_T2->Fill(HT);
 
     // do pT cuts on jets  
     if(Cpt1) {
     if(otfile) count->Fill("jet pt1",1);
-    if(otfile) acount->Fill(3.5);
+    if(otfile) acount->Fill(5.5);
 
 
     if(Cpt2) {
     if(otfile) count->Fill("jet pt2",1);
-    if(otfile) acount->Fill(4.5);
+    if(otfile) acount->Fill(6.5);
 
 
     if(Cpt3) {
     if(otfile) count->Fill("jet pt3",1);
-    if(otfile) acount->Fill(5.5);
+    if(otfile) acount->Fill(7.5);
 
 
     if(Cpt4) {
     if(otfile) count->Fill("jet pt4",1);
-    if(otfile) acount->Fill(6.5);
-
-    if(PVPT0) {
-    if(otfile) count->Fill("pv 0",1);
-    if(otfile) acount->Fill(7.5);
-
-
-    if(PVZ) {
-    if(otfile) count->Fill("pv z",1);
     if(otfile) acount->Fill(8.5);
 
 
-    if(Cmet) {
-    if(otfile) count->Fill("MET",1);
-    if(otfile) acount->Fill(9.5);
 
-    if(Cmass) {
-    if(otfile) count->Fill("mass",1);
-    if(otfile) acount->Fill(10.5);
+
 
     if(Canem) {   // almost emerging
     if(otfile) count->Fill("almostemerging",1);
-    if(otfile) acount->Fill(11.5);
+    if(otfile) acount->Fill(9.5);
 
     if(Cnem) {  // emerging
     if(otfile) count->Fill("emerging",1);
+    if(otfile) acount->Fill(10.5);
+
+    if(Cmet) {
+    if(otfile) count->Fill("MET",1);
+    if(otfile) acount->Fill(11.5);
+
+    if(Cmass) {
+    if(otfile) count->Fill("mass",1);
     if(otfile) acount->Fill(12.5);
 
             npass+=1;
@@ -2216,6 +2235,10 @@ hmedipd->Write();
 hmedipb->Write();
 hmedipud->Write();
 hmedipdk->Write();
+hmipahated->Write();
+hmipahatedk->Write();
+hmipahateud->Write();
+hmipahateb->Write();
 
 hht4->Write();
 h2ipvzd->Write();
@@ -2250,6 +2273,23 @@ h2ipvzdk->Write();
   delete track_ref_x;  
   delete track_ref_y;  
   delete track_ref_z;  
+
+delete  acount;delete  count;delete  hjetcut;delete  hjetcuta;delete  hjetchf;delete  h_nemg;delete  hnjet;delete  hpt;delete  heta;delete  heta2;delete  halpha;delete  H_T;delete  H_T2;delete  H_T3;delete  H_T4;delete  hbcut_ntrkpt1;delete  hacut_ntrkpt1;delete  hbcut_nef;delete  hacut_nef;delete  hbcut_cef;delete  hacut_cef;delete  hbcut_alphamax;delete  hacut_alphamax;delete  hbcut_theta2d;delete  hbcut_medip;delete  hmetnm1;delete  hmet;delete  hmassnm1;delete  htheta2D1nm1;delete  htheta2D2nm1;delete  htheta2D3nm1;delete  htheta2D4nm1;delete  hHTnm1;delete  hHThltnm1;delete  hnHitsnm1;delete  hntrk1nm1;delete  hlgmedipnm1;delete  hmedipnm1;delete  hpt1nm1;delete  hpt2nm1;delete  hpt3nm1;delete  hpt4nm1;delete  halphanm1;delete  hnemnm1;delete  hpt1;delete  hpt2;delete  hpt3;delete  hpt4;delete  hipXYEJ;delete  hipXYnEJ;delete  htvw;delete  htvwEJ;delete  hnmedipnm1;delete  hnlgmedipnm1;delete  hn2medipnm1;delete  hjptfrb;delete  hjptfra1;delete  hjptfra2;delete  hjptfrbc;delete  hjptfra1c;delete  hjptfra2c;delete  hjptb;delete  hjpta;delete  haMgj;delete  hHTko;delete  hpt1ko;delete  hpt2ko;delete  hpt3ko;delete  hpt4ko;delete  hipXYSigEJ;delete  hipXYSignEJ;delete  hmedipXYEJ;delete  hmedipXYnEJ;delete  hmeanipXYEJ;delete  hmeanipXYnEJ;delete  hmass;
+    delete  hdkjetam;delete  hdkjetmeanip;delete  hdkjetntr;delete  hdkjetlgmedip;delete  hdkjetmedip;delete  hdkjettrkip;delete  hdkjettrkips;delete  hdkjettrkw;delete  hdkjettrgip;delete  hdkjettrkdr;delete  ham2dfd;delete  ham2dfdk;delete  hdkjetamo;delete  hdkjettrkahate;delete  hdjettrkahate;delete  hdjetamo;delete  hdzjpre;delete  hdzjfinal;
+    delete  hdjetam;delete  hdjetmeanip;delete  hdjetntr;delete  hdjetmedip;delete  hdjetlgmedip;delete  hdjettrkip;delete  hdjettrkips;delete  hdjettrkw;delete  hdjettrgip;delete  hdjettrkdr;delete  hdjetam2d;delete  hdkjetam2d;delete  hmeanz;delete  hmeanzfa;delete  hmeanzpa;delete  hmeanzdk;delete  hmeanzd;delete  h2dpa;delete  h2dfa;delete  hntrkpt1zmpa;delete  hntrkpt1zmfa;delete  hbigb;delete  hpvpre;delete  hpvfinal;delete  hdzpre;delete  hdzfinal;delete  hmeanzpre;delete  hmeanzfinal;
+    delete  hnvtxpre;delete  hnvtxfinal;delete  hntrkpre;delete  hntrkfinal;delete  hjetptfrpre;delete  hjetptfrfinal;
+    delete  hjntrkpre;delete  hjntrkfinal;delete  hfpilepre;delete  hfpilefinal;delete  hptmaxpre;delete  hptmaxfinal;delete  hsum2Dfpre;delete  hsum2Dffinal;delete  hsum2Dfd;delete  hsum2Dfdk;
+    delete  hptallpre;delete  hptudpre;delete  hptcpre;delete  hptspre;delete  hptgbbpre;delete  hptbpre;delete  hptgpre;
+    delete  hptallfinal;delete  hptudfinal;delete  hptcfinal;delete  hptsfinal;delete  hptgbbfinal;delete  hptbfinal;delete  hptgfinal;
+    delete  hptallfinal2;delete  hptudfinal2;delete  hptcfinal2;delete  hptsfinal2;delete  hptgbbfinal2;delete  hptbfinal2;delete  hptgfinal2;
+    delete  hptallpree;delete  hptudpree;delete  hptcpree;delete  hptspree;delete  hptgbbpree;delete  hptbpree;delete  hptgpree;
+    delete  hptallfinale;delete  hptudfinale;delete  hptcfinale;delete  hptsfinale;delete  hptgbbfinale;delete  hptbfinale;delete  hptgfinale;
+    delete  ham2dfb;delete  ham2dfgbb;delete  ham2dfg;delete  ham2dfud;
+    delete  ham2dfbpt1;delete  ham2dfbpt2;delete  ham2dfbpt3;
+    delete  ham2dfudpt1;delete  ham2dfudpt2;delete  ham2dfudpt3;
+    delete  hpvztrz;delete  hip2dsig;
+    delete  htheta2dd; delete  htheta2db; delete  htheta2dud; delete  htheta2ddk; 
+    delete  hmedipd; delete  hmedipb; delete  hmedipud; delete  hmedipdk ; delete  hlgam2dfud; delete  hlgam2dfdk; delete  hpvztrzd  ; delete  hip2dsigd ; delete  hpvztrzdk ; delete  hip2dsigdk; delete  hpvztrzud ; delete  hip2dsigud; delete  hpvztrzb  ; delete  hip2dsigb;
 
 
   f->Close();

@@ -1,4 +1,4 @@
-#include <iostream>
+/*#include <iostream>
 #include <iomanip>
 #include <locale>
 
@@ -19,7 +19,8 @@ using std::vector;
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
-
+*/
+#include "paramSet.h"
   
     // cuts
 float DHTcut=800;
@@ -41,11 +42,12 @@ float Dtheta2dcut=0.;
 
 int EMJ16003(bool otfile, bool hasPre, const char* inputfilename,const char* outputfilename);
 
-int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* outputfilename,
+/*int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* outputfilename,
 	      float HTcut, float pt1cut, float pt2cut,float pt3cut, float pt4cut, float jetacut,float alphaMaxcut, float maxIPcut, float NemfracCut,float CemfracCut,
 	      int ntrk1cut, int NemergingCut, bool blind,
 	      float Dmetcut, float Dmass, float Dmasscut, float Dtheta2dcut
               );
+*/
 std::vector<std::string> ListTH(std::string outdir,std::string binname,int htype);
 void  HistNorm(std::string outdir, vector<double>& norm,int nbin,float* xsec, int* nfiles, std::string* binnames);
 TH1F* HistMan(std::string outdir, float goalintlum,std::string thisHIST,vector<double>& histnorm, vector<double>& outnorm,int nbin,float* xsec, int* nfiles, std::string* binnames,bool donorm);
@@ -57,10 +59,14 @@ TH2F* HistMan2(std::string outdir, float goalintlum,std::string thisHIST,vector<
 
 
 
-void QCDhists(int imode, std::string outdir, int ibin, float goalintlum,  
+/*void QCDhists(int imode, std::string outdir, int ibin, float goalintlum,  
 int nbin, float* xsec, int* nfiles, std::string* binnames,std::string* filesnames,
 std::string sumhistname,
  bool hasPre,bool donorm, bool blind, bool b16003,float themass) {
+*/
+void QCDhists(int imode, std::string outdir, int ibin, float goalintlum,  
+int nbin, float* xsec, int* nfiles, std::string* binnames,std::string* filesnames,
+std::string sumhistname,  bool hasPre,bool donorm, bool blind, const Parmset &ps) {
 
   std::string inputfile;
   std::string outputfile;
@@ -92,16 +98,9 @@ std::string sumhistname,
       outputfile=bbname+"histos"+binnames[i]+"_"+std::to_string(linecounter)+".root";
       std::cout<<"output file is "<<outputfile<<std::endl;
 
-      int itmp;
-      if(!b16003) {
-	  itmp = EMJselect(true,hasPre,inputfile.c_str(),outputfile.c_str(),DHTcut, Dpt1cut,Dpt2cut,Dpt3cut,Dpt4cut,Djetacut,Dalphacut,DmaxIPcut,0.9,0.9,Dntrk1,Dnemcut,blind,
-			       Dmetcut,themass,Dmasscut,Dtheta2dcut
-                         );
-      } else {
-        itmp = EMJ16003(true,hasPre,inputfile.c_str(),outputfile.c_str());
-      }
-	  linecounter +=1;
-    std::cout<<"passcounts: "<<itmp<<std::endl;
+      int itmp = EMJselect(true,hasPre,inputfile.c_str(),outputfile.c_str(),ps,blind);
+      linecounter +=1;
+      std::cout<<"passcounts: "<<itmp<<std::endl;
     }  // end of loop over files
 
 
