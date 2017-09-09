@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
   ps.jetacut=2; // always = 2
 
   ps.a3dcut=0.25;
-  ps.ahatecut=15;
+  ps.ahatecut=10;
   ps.medIPcut=0.05;
   ps.NemfracCut=0.9; //always 0.9
   ps.CemfracCut=0.9; //always 0.9
@@ -76,6 +76,8 @@ int main(int argc, char *argv[])
   ps.mass=800;       
   ps.masscut=300;
   ps.theta2dcut=0;
+  ps.pilecut=1000;
+  ps.pilecut2=1000;
 
  // ipsigcut=2;
 

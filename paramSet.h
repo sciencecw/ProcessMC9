@@ -45,10 +45,8 @@ struct Parmset {
   float mass;       //kak:850GeV?
   float masscut;
   float theta2dcut;
-
   //float ipsigcut;
   //float ipsigcut2; // cut for frac2DSig
-
 // TODO:  to be added
   float pilecut;
   float pilecut2; //for fnpile
@@ -125,4 +123,6 @@ inline void printParam(const Parmset &ps) {
   //std::cout<<"a2DSig cut    is "<<ps.a2dsigcut<<std::endl;
   //std::cout<<"f2DSig cut    is "<<ps.f2dsigcut<<std::endl;
   std::cout<<"ahate cut     is "<<ps.ahatecut<<std::endl;
+  std::cout<<"pile cut      is "<<ps.pilecut<<std::endl;
+  std::cout<<"pile cut2     is "<<ps.pilecut2<<std::endl;
 }
