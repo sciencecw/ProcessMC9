@@ -1,7 +1,0 @@
-1  # has histogram eventCountPreTrigger
-13  # number of HT bins used in generation
-1 1 1 1 1 1 1 1 1 1 1 1 1  # cross section for each bin; manually adjusted for 80X sample and splitting of HT bins
-1141 230 230 230 232 255 255 251 220 220 213 133 134 #number of files
-QCD_HT500to700 QCD_HT700to1000a QCD_HT700to1000b QCD_HT700to1000c QCD_HT700to1000d QCD_HT1000to1500a QCD_HT1000to1500b QCD_HT1000to1500c QCD_HT1500to2000a QCD_HT1500to2000b QCD_HT1500to2000c QCD_HT2000toInfa QCD_HT2000toInfb # name for each bin
-configs/QCD_HT500to700_80X_config.txt configs/QCD_HT700to1000_80X_config_short_a configs/QCD_HT700to1000_80X_config_short_b configs/QCD_HT700to1000_80X_config_short_c configs/QCD_HT700to1000_80X_config_short_d configs/QCD_HT1000to1500_80X_config_short_a configs/QCD_HT1000to1500_80X_config_short_b configs/QCD_HT1000to1500_80X_config_short_c configs/QCD_HT1500to2000_80X_config_short_a configs/QCD_HT1500to2000_80X_config_short_b configs/QCD_HT1500to2000_80X_config_short_c configs/QCD_HT2000toInf_80X_config_short_a configs/QCD_HT2000toInf_80X_config_short_b 
-SumHistQQCD2b  # for summary hist

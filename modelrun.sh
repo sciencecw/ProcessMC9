@@ -16,7 +16,7 @@ fi
 while read -r folder
   #do folder=${fullpath%/} 
   #folder=${folder##*/}
-  do yes | python control.py -s $folder -m$1 -n80X >modelrunoutput.log
-  echo "python control.py -s $folder -m$1 -n80X"
+  do yes | python control.py -s $folder -m$1 -n80Xb >>modelrunoutput.log
+  echo "python control.py -s $folder -m$1 -n80Xb"
   ./massjobs.sh
-done < configs/models_80X.txt
+done < configs/models_80Xb.txt

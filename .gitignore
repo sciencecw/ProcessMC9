@@ -31,5 +31,13 @@
 *.out
 *.app
 
+*.log
+*.cc_old
+*.stdout
+*.stderr
+*.condor
+
+files_*
+
 main
 massjobs.sh

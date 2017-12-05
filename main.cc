@@ -56,27 +56,27 @@ int main(int argc, char *argv[])
   std::cout<<"bin is "<<ibin<<std::endl;
   std::cout<<"input file is "<<parmfile<<std::endl;
   Parmset ps;
-  ps.HTcut=1000;
-  ps.pt1cut=300;
-  ps.pt2cut=300;
-  ps.pt3cut=250;
-  ps.pt4cut=150;
+  ps.HTcut= 900;
+  ps.pt1cut=225;
+  ps.pt2cut=100;
+  ps.pt3cut=100;
+  ps.pt4cut=100;
   ps.jetacut=2; // always = 2
 
   ps.a3dcut=0.25;
-  ps.ahatecut=10;
-  ps.medIPcut=0.05;
+  ps.ahatecut=6;
+  ps.medIPcut=0.08;
   ps.NemfracCut=0.9; //always 0.9
   ps.CemfracCut=0.9; //always 0.9
-  ps.ntrk1cut=1;
-  ps.pvz_cut=50;
+  ps.ntrk1cut=0;
+  ps.pvz_cut=15;
 
   ps.NemergingCut=2;
   ps.metcut=0;
-  ps.mass=800;       
-  ps.masscut=300;
+  ps.mass=600;       
+  ps.masscut=30000;
   ps.theta2dcut=0;
-  ps.pilecut=1000;
+  ps.pilecut=2.5;
   ps.pilecut2=1000;
 
  // ipsigcut=2;

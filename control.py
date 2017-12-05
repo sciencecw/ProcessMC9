@@ -29,6 +29,9 @@ mainarea = os.getcwd()
 hostarea = os.getcwd()
 hostarea+="/"
 
+if options.ntuples=='80Xb':
+   modellistpath='configs/models_80Xb.txt'
+   modelparmspath="configs/modelparms_80Xb/parms_80X_"
 if options.ntuples=='80X':
    modellistpath='configs/models_80X.txt'
    modelparmspath="configs/modelparms_80X/parms_80X_"
@@ -39,7 +42,7 @@ if options.ntuples=='74X':
 
 #Set the output directory name and parameter file based on the sample you are running over
 dirname=""
-dirsuffix="_ps_rerun"
+dirsuffix="_medsip"
 prefix=""
 nbin=""
 if options.mode==0:
@@ -67,6 +70,18 @@ elif options.sample=="QCD2":
   dirname="files_QCD2"+dirsuffix
   prefix = "QCD2"
   nbin=13
+elif options.sample=="QQCD0823":
+  dirname="files_QQCD0823"+dirsuffix
+  prefix = "QQCD0823"
+  nbin=5
+#elif options.sample=="QCD0823":
+#  dirname="files_QCD0823"+dirsuffix
+#  prefix = "QCD0823"
+#  nbin=-1
+elif options.sample=="QCD0823":
+  dirname="files_QCD0823"+dirsuffix
+  prefix = "QCD0823"
+  nbin=35
 elif options.sample=="ModelA":
   dirname="files_modA"+dirsuffix
   prefix = "modelA"
@@ -80,7 +95,7 @@ else:
      if options.sample in myfile.read():
         print "othermodel: ", options.sample
         prefix=options.sample
-        dirname="othermodels/files_"+prefix
+        dirname="othermodels"+dirsuffix+"/files_"+prefix
         nbin=1
         isOtherModel=True
      else:
@@ -90,6 +105,7 @@ else:
 
 #Create output directory; ask what to do if it exists already
 if options.mode==0:
+  print dirname
   print('Checking if directory {} exists...'.format(dirname))
   if os.path.exists(hostarea+dirname):
     userreply = raw_input("Output directory already exists! Are you sure you want to overwrite all the contents? (y/n): ")
@@ -111,11 +127,11 @@ hostarea2=hostarea+dirname+"/"
 #write the .jdl file and the bash script to submit the condor job
 f = open("massjobs.sh",'w')
 if options.mode==2:
-   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosQCD_HT500to700_*.root -o "+dirname+"/SumhistosQCD_HT500to700_0.root\n")
-   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosQCD_HT1000to1500*.root -o "+dirname+"/SumhistosQCD_HT1000to1500_0.root\n")
-   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosQCD_HT700to1000*.root -o "+dirname+"/SumhistosQCD_HT700to1000_0.root\n")
-   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosQCD_HT1500to2000*.root -o "+dirname+"/SumhistosQCD_HT1500to2000_0.root\n")
-   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosQCD_HT2000toInf*.root -o "+dirname+"/SumhistosQCD_HT2000toInf_0.root\n")
+   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosHT500to700*.root -o "+dirname+"/SumhistosQCD_HT500to700_0.root\n")
+   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosHT1000to1500*.root -o "+dirname+"/SumhistosQCD_HT1000to1500_0.root\n")
+   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosHT700to1000*.root -o "+dirname+"/SumhistosQCD_HT700to1000_0.root\n")
+   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosHT1500to2000*.root -o "+dirname+"/SumhistosQCD_HT1500to2000_0.root\n")
+   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosHT2000toInf*.root -o "+dirname+"/SumhistosQCD_HT2000toInf_0.root\n")
 if options.mode>=1:
   nbin=1
 
@@ -123,8 +139,12 @@ print "number of bins is "+str(nbin)
 for i in range(0,nbin):
   print "i="+str(i+1)
   parmsfile=hostarea+"configs/parms_"+prefix+".txt"
-  if options.sample=="QCD2" and options.mode==0:
-	parmsfile=hostarea+"configs/parms_QCD2b.txt"
+  if options.sample=="QCD2" and options.mode==2:
+	parmsfile=hostarea+"configs/parms_QCD_combine.txt"
+  if options.sample=="QCD0823" and options.mode==2:
+	parmsfile=hostarea+"configs/parms_QCD_combine.txt"
+  if options.sample=="QCD0823_0" and options.mode==2:
+	parmsfile=hostarea+"configs/parms_QCD_combine.txt"
   if isOtherModel: 
        parmsfile=hostarea+modelparmspath+prefix+".txt"
   name = "files-"+prefix+"-"+str(i+1)
