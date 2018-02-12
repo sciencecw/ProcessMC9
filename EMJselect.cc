@@ -129,6 +129,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   vector<vector<float> > *track_ipZ =0;
   vector<vector<float> > *track_ipXY = 0;
   vector<vector<float> > *track_ipXYSig = 0;
+  vector<vector<float> > *track_ip3DSig = 0;
   vector<vector<float> > *track_ref_x =0;
   vector<vector<float> > *track_ref_y =0;
   vector<vector<float> > *track_ref_z =0;
@@ -207,6 +208,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   tt->SetBranchAddress("track_ref_y",&track_ref_y);
   tt->SetBranchAddress("track_ref_z",&track_ref_z);
   tt->SetBranchAddress("track_ipXYSig",&track_ipXYSig);
+  tt->SetBranchAddress("track_ip3DSig",&track_ip3DSig);
   tt->SetBranchAddress("track_nMissInnerHits",&track_nMissInnerHits);
   tt->SetBranchAddress("track_nMissInnerPxlLayers",&track_nMissInnerPxlLayers);
   tt->SetBranchAddress("track_nMissOuterTrkLayers",&track_nMissOuterTrkLayers);
@@ -221,7 +223,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
   // create a histogramsi
   TH1F *acount,*count,*hjetcut,*hjetcuta,*hjetchf,*h_naemg, *h_nemg,*hnjet,*hpt,*heta,*heta2,*halpha,*H_T,*H_T2,*H_T3,*H_T4,*hbcut_ntrkpt1,*hacut_ntrkpt1,*hbcut_nef,*hacut_nef,*hbcut_cef,*hacut_cef,*hbcut_alphamax,*hacut_alphamax,*hbcut_theta2d,*hbcut_medip,*hmetnm1,*hmet,*hmassnm1,*htheta2D1nm1,*htheta2D2nm1,*htheta2D3nm1,*htheta2D4nm1,*hHTnm1,*hHThltnm1,*hnHitsnm1,*hntrk1nm1,*hlgmedipnm1,*hlgmedipdknm1,*hlgmedipdnm1,* hmedipnm1,*hpt1nm1,*hpt2nm1,*hpt3nm1,*hpt4nm1,*halphanm1,*hnemnm1,*hpt1,*hpt2,*hpt3,*hpt4,*hipXYEJ,*hipXYnEJ,*htvw,*htvwEJ,*hnmedipnm1,*hnlgmedipnm1,*hn2medipnm1,*hjptfrb,*hjptfra1,*hjptfra2,*hjptfrbc,*hjptfra1c,*hjptfra2c,*hjptb,*hjpta,*hHTko,*hpt1ko,*hpt2ko,*hpt3ko,*hpt4ko,*hipXYSigEJ,*hipXYSignEJ,*hmedipXYEJ,*hmedipXYnEJ,*hmeanipXYEJ,*hmeanipXYnEJ,*hmass,
-    *hdkjetmeanip,*hdkjetntr,*hdkjetlgmedip,*hdkjetmedip,*hdkjettrkip,*hdkjettrkips,*hdkjettrkw,*hdkjettrgip,*hdkjettrkdr,*ham2dfd,*ham2dfdk,*hdkjettrkahate,*hdjettrkahate,*hdzjpre,*hdzjfinal,
+    *hdkjetmeanip,*hdkjetntr,*hdkjetlgmedip,*hdkjetmedip,*hdkjettrkip,*hdkjettrkips,*hdkjettrkw,*hdkjettrgip,*hdkjettrkdr,*ham2dfd,*ham2dfdk,*hdkjettrk3dsig,*hdjettrk3dsig,*hdkjettrkahate,*hdjettrkahate,*hdzjpre,*hdzjfinal,
     *hdjetmeanip,*hdjetntr,*hdjetmedip,*hdjetlgmedip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr,*hmeanz,*hmeanzfa,*hmeanzpa,*hmeanzdk,*hmeanzd,*h2dpa,*h2dfa,*hntrkpt1zmpa,*hntrkpt1zmfa,*hbigb,*hpvpre,*hpvfinal,*hdzpre,*hdzfinal,*hmeanzpre,*hmeanzfinal,
     *hnvtxpre,*hnvtxfinal,*hntrkpre,*hntrkfinal,*hjetptfrpre,*hjetptfrfinal,
     *hjntrkpre,*hjntrkfinal,*hfpilepre,*hfpilefinal,*hptmaxpre,*hptmaxfinal,*hsum2Dfpre,*hsum2Dffinal,*hsum2Dfd,*hsum2Dfdk,
@@ -394,8 +396,10 @@ hmetaud = new TH1F("hmetaud","met jet-component u,d quark jets " ,100,-1000.,100
 hmetadk = new TH1F("hmetadk","met jet-component dark quark jets ",100,-1000.,1000.);
 
 
-  hdjettrkahate = new TH1F("hdjettrkahate","ahate in down quark jets",500,0,500);
-  hdkjettrkahate = new TH1F("hdkjettrkahate","ahate in dark quark jets",500,0,500);
+  hdjettrkahate = new TH1F("hdjettrkahate","ahate in down quark jets",300,0,300);
+  hdkjettrkahate = new TH1F("hdkjettrkahate","ahate in dark quark jets",300,0,300);
+  hdjettrk3dsig = new TH1F("hdjettrk3dsig","3dsig for down quark jets",300,0,300);
+  hdkjettrk3dsig = new TH1F("hdkjettrk3dsig","3dsig for dark quark jets",300,0,300);
 
 
   hdkjetmeanip = new TH1F("hdkjetmeanip","mean ip dark quark jets",100,0.,10.);
@@ -1269,6 +1273,7 @@ hntrk1a3ddk = new TH2F("hntrk1a3ddk","Ntrk>1GeV vs a3d dark quark jets "  ,20,0,
         vector<float> track_ipXYs = track_ipXY->at(i);
         vector<float> track_ipZs = track_ipZ->at(i);
         vector<float> track_ipXYSigs = track_ipXYSig->at(i);
+        vector<float> track_ip3DSigs= track_ip3DSig->at(i);
         vector<int> track_sources = track_source->at(i);
         vector<int> track_qualitys = track_quality->at(i);
         vector<float> track_pvWeights = track_pvWeight->at(i);
@@ -1394,6 +1399,7 @@ hntrk1a3ddk = new TH2F("hntrk1a3ddk","Ntrk>1GeV vs a3d dark quark jets "  ,20,0,
 		  ahate1=ahate1/deltaz;
 		  float ahate =sqrt(ahate1*ahate1+ahate2*ahate2);
 		  hdkjettrkahate->Fill(OverFlow(ahate,hdkjettrkahate));
+		  hdkjettrk3dsig->Fill(OverFlow(track_ip3DSigs[itrack],hdkjettrk3dsig));
 	          if(fabs(pv_z->at(0)-track_ref_zs[itrack])<ps.pilecut) 
 		  {
 		    hdkjettrkip->Fill(OverFlow(track_ipXYs[itrack],hdkjettrkip));
@@ -1467,6 +1473,7 @@ hntrk1a3ddk = new TH2F("hntrk1a3ddk","Ntrk>1GeV vs a3d dark quark jets "  ,20,0,
 		  ahate1=ahate1/deltaz;
 		  float ahate =sqrt(ahate1*ahate1+ahate2*ahate2);
 		  hdjettrkahate->Fill(OverFlow(ahate,hdjettrkahate));
+		  hdjettrk3dsig->Fill(OverFlow(track_ip3DSigs[itrack],hdjettrk3dsig));
 		  hmipahated->Fill(log10(rmed[i]),ahate);
 		  hmipipsigd->Fill(log10(rmed[i]),track_ipXYSigs[itrack]);
 		  hdjettrkip->Fill(OverFlow(track_ipXYs[itrack],hdjettrkip));
@@ -2325,6 +2332,8 @@ hip2dsigb->Write();
 
     hdjettrkahate  ->Write(); 
     hdkjettrkahate ->Write(); 
+    hdjettrk3dsig  ->Write(); 
+    hdkjettrk3dsig  ->Write(); 
 hnlgmedipnm1->Write();
     adk2Dr0->Write();
     ad2Dr0->Write();
@@ -2414,13 +2423,14 @@ hmedsipdk->Write();
   delete track_algo;
   delete track_ipZ;
   delete track_ipXY;
+  delete track_ip3DSig;
   delete track_ipXYSig;
   delete track_ref_x;  
   delete track_ref_y;  
   delete track_ref_z;  
 
 delete  acount;delete  count;delete  hjetcut;delete  hjetcuta;delete  hjetchf;delete  h_nemg;delete h_naemg;delete  hnjet;delete  hpt;delete  heta;delete  heta2;delete  halpha;delete  H_T;delete  H_T2;delete  H_T3;delete  H_T4;delete  hbcut_ntrkpt1;delete  hacut_ntrkpt1;delete  hbcut_nef;delete  hacut_nef;delete  hbcut_cef;delete  hacut_cef;delete  hbcut_alphamax;delete  hacut_alphamax;delete  hbcut_theta2d;delete  hbcut_medip;delete  hmetnm1;delete  hmet;delete  hmassnm1;delete  htheta2D1nm1;delete  htheta2D2nm1;delete  htheta2D3nm1;delete  htheta2D4nm1;delete  hHTnm1;delete  hHThltnm1;delete  hnHitsnm1;delete  hntrk1nm1;delete  hlgmedipnm1;delete  hmedipnm1;delete  hpt1nm1;delete  hpt2nm1;delete  hpt3nm1;delete  hpt4nm1;delete  halphanm1;delete  hnemnm1;delete  hpt1;delete  hpt2;delete  hpt3;delete  hpt4;delete  hipXYEJ;delete  hipXYnEJ;delete  htvw;delete  htvwEJ;delete  hnmedipnm1;delete  hnlgmedipnm1;delete  hn2medipnm1;delete  hjptfrb;delete  hjptfra1;delete  hjptfra2;delete  hjptfrbc;delete  hjptfra1c;delete  hjptfra2c;delete  hjptb;delete  hjpta;delete  hHTko;delete  hpt1ko;delete  hpt2ko;delete  hpt3ko;delete  hpt4ko;delete  hipXYSigEJ;delete  hipXYSignEJ;delete  hmedipXYEJ;delete  hmedipXYnEJ;delete  hmeanipXYEJ;delete  hmeanipXYnEJ;delete  hmass;
-    delete  hdkjetmeanip;delete  hdkjetntr;delete  hdkjetlgmedip;delete  hdkjetmedip;delete  hdkjettrkip;delete  hdkjettrkips;delete  hdkjettrkw;delete  hdkjettrgip;delete  hdkjettrkdr;delete  ham2dfd;delete  ham2dfdk;delete  hdkjettrkahate;delete  hdjettrkahate;delete  hdzjpre;delete  hdzjfinal;
+    delete  hdkjetmeanip;delete  hdkjetntr;delete  hdkjetlgmedip;delete  hdkjetmedip;delete  hdkjettrkip;delete  hdkjettrkips;delete  hdkjettrkw;delete  hdkjettrgip;delete  hdkjettrkdr;delete  ham2dfd;delete  ham2dfdk;delete  hdkjettrkahate;delete  hdjettrkahate;delete hdjettrk3dsig; delete hdkjettrk3dsig;delete  hdzjpre;delete  hdzjfinal;
     delete  hdjetmeanip;delete  hdjetntr;delete  hdjetmedip;delete  hdjetlgmedip;delete  hdjettrkip;delete  hdjettrkips;delete  hdjettrkw;delete  hdjettrgip;delete  hdjettrkdr;delete  hmeanz;delete  hmeanzfa;delete  hmeanzpa;delete  hmeanzdk;delete  hmeanzd;delete  h2dpa;delete  h2dfa;delete  hntrkpt1zmpa;delete  hntrkpt1zmfa;delete  hbigb;delete  hpvpre;delete  hpvfinal;delete  hdzpre;delete  hdzfinal;delete  hmeanzpre;delete  hmeanzfinal;
     delete  hnvtxpre;delete  hnvtxfinal;delete  hntrkpre;delete  hntrkfinal;delete  hjetptfrpre;delete  hjetptfrfinal;
     delete  hjntrkpre;delete  hjntrkfinal;delete  hfpilepre;delete  hfpilefinal;delete  hptmaxpre;delete  hptmaxfinal;delete  hsum2Dfpre;delete  hsum2Dffinal;delete  hsum2Dfd;delete  hsum2Dfdk;
