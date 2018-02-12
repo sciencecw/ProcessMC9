@@ -1457,7 +1457,7 @@ hntrk1a3ddk = new TH2F("hntrk1a3ddk","Ntrk>1GeV vs a3d dark quark jets "  ,20,0,
 	      hmipmassd->Fill(log10(rmed[i]),amass);
 	      
               for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	        if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z->at(0)-track_ref_zs[itrack])<ps.pilecut)) {
+	        if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0) ) {
 		  float ahate1 = (pv_z->at(0)-track_ref_zs[itrack]);
 		  float ahate2=track_ipXYSigs[itrack];
     		  h2ipvzd->Fill(ahate2,ahate1);
@@ -1733,17 +1733,16 @@ hntrk1a3ddk = new TH2F("hntrk1a3ddk","Ntrk>1GeV vs a3d dark quark jets "  ,20,0,
 	        hmipmassud->Fill(log10(rmed[i]),amass);
 
 		for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-               	if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& 
-				(fabs(pv_z->at(0)-track_ref_zs[itrack])<ps.pilecut)) {
+               	if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)){
                   float ahate1=pv_z->at(0)-track_ref_zs[itrack];
                   float ahate2=track_ipXYSigs[itrack];
                   h2ipvzud->Fill(ahate2,ahate1);
 		  hpvztrzud->Fill(OverFlow(ahate1,hpvztrzud));
-		  hip2dsigud->Fill(OverFlow(ahate2,hip2dsigud));
+		  //ip2dsigud->Fill(OverFlow(ahate2,hip2dsigud));
 		  hip2dud->Fill(OverFlow(track_ipXYs[itrack],hip2dud));
 		  ahate1=ahate1/deltaz;
 		  float ahate =sqrt(ahate1*ahate1+ahate2*ahate2);
-		  hdjettrkahate->Fill(OverFlow(ahate,hdjettrkahate));
+		  //hdjettrkahate->Fill(OverFlow(ahate,hdjettrkahate));
 		  hmipahateud->Fill(log10(rmed[i]),ahate);
 		  hmipipsigud->Fill(log10(rmed[i]),track_ipXYSigs[itrack]);
   		}}

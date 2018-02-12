@@ -92,7 +92,7 @@ std::string sumhistname,  bool hasPre,bool donorm, bool blind, const Parmset &ps
     std::ifstream inputconfig(filesnames[i]);
     std::cout<<"input config file is: "<<filesnames[i]<<std::endl;
     int linecounter = 0;
-    while(std::getline(inputconfig,inputfile)) {
+    while(std::getline(inputconfig,inputfile) && nfiles[i]>linecounter) {
         
       std::cout<<"input file is "<<inputfile<<std::endl;
       outputfile=bbname+"histos"+binnames[i]+"_"+std::to_string(linecounter)+".root";

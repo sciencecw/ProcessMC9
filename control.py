@@ -42,7 +42,7 @@ if options.ntuples=='74X':
 
 #Set the output directory name and parameter file based on the sample you are running over
 dirname=""
-dirsuffix="_medsip"
+dirsuffix="_combined_1122_cut1"
 prefix=""
 nbin=""
 if options.mode==0:
@@ -127,11 +127,11 @@ hostarea2=hostarea+dirname+"/"
 #write the .jdl file and the bash script to submit the condor job
 f = open("massjobs.sh",'w')
 if options.mode==2:
-   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosHT500to700*.root -o "+dirname+"/SumhistosQCD_HT500to700_0.root\n")
-   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosHT1000to1500*.root -o "+dirname+"/SumhistosQCD_HT1000to1500_0.root\n")
-   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosHT700to1000*.root -o "+dirname+"/SumhistosQCD_HT700to1000_0.root\n")
-   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosHT1500to2000*.root -o "+dirname+"/SumhistosQCD_HT1500to2000_0.root\n")
-   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosHT2000toInf*.root -o "+dirname+"/SumhistosQCD_HT2000toInf_0.root\n")
+   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosQCD_HT500to700*.root -o "+dirname+"/SumhistosQCD_HT500to700_0.root\n")
+   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosQCD_HT1000to1500*.root -o "+dirname+"/SumhistosQCD_HT1000to1500_0.root\n")
+   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosQCD_HT700to1000*.root -o "+dirname+"/SumhistosQCD_HT700to1000_0.root\n")
+   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosQCD_HT1500to2000*.root -o "+dirname+"/SumhistosQCD_HT1500to2000_0.root\n")
+   f.write("mergeTFileServiceHistograms -i "+dirname+"/histosQCD_HT2000toInf*.root -o "+dirname+"/SumhistosQCD_HT2000toInf_0.root\n")
 if options.mode>=1:
   nbin=1
 
