@@ -29,6 +29,9 @@ mainarea = os.getcwd()
 hostarea = os.getcwd()
 hostarea+="/"
 
+if options.ntuples=='80X_1103':
+   modellistpath='configs/models_80Xb_20171103.txt'
+   modelparmspath="configs/modelparms_80Xb_20171103/parms_80X_"
 if options.ntuples=='80Xb':
    modellistpath='configs/models_80Xb.txt'
    modelparmspath="configs/modelparms_80Xb/parms_80X_"
@@ -42,7 +45,7 @@ if options.ntuples=='74X':
 
 #Set the output directory name and parameter file based on the sample you are running over
 dirname=""
-dirsuffix="_combined_1122_cut1"
+dirsuffix="_020918_3dsig2"
 prefix=""
 nbin=""
 if options.mode==0:
@@ -74,6 +77,10 @@ elif options.sample=="QQCD0823":
   dirname="files_QQCD0823"+dirsuffix
   prefix = "QQCD0823"
   nbin=5
+elif options.sample=="QQCD1103":
+  dirname="files_QQCD1103"+dirsuffix
+  prefix = "QQCD1103"
+  nbin=3
 #elif options.sample=="QCD0823":
 #  dirname="files_QCD0823"+dirsuffix
 #  prefix = "QCD0823"
