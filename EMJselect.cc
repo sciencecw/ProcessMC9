@@ -76,7 +76,7 @@ void BinLogX(TH1*h)
    delete new_bins; 
 }
 
-int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* outputfilename, const Parmset &ps, bool blind
+int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* outputfilename, const Parmset &ps, bool blind, bool isQCD
 ) {
   // "ntuple.root", "histos.root"
   // suggest cuts 1000., 400.,200.,125.,50.,0.2,0.9,0.9,0,1
@@ -414,11 +414,13 @@ hmetaud = new TH1F("hmetaud","met jet-component u,d quark jets " ,100,-1000.,100
 hmetadk = new TH1F("hmetadk","met jet-component dark quark jets ",100,-1000.,1000.);
 
 
-  hdjettrkahate = new TH1F("hdjettrkahate","ahate in down quark jets",300,0,300);
-  hdkjettrkahate = new TH1F("hdkjettrkahate","ahate in dark quark jets",300,0,300);
+  hdjettrkahate = new TH1F("hdjettrkahate","ahate in down quark jets",300,-2,3);
+  hdkjettrkahate = new TH1F("hdkjettrkahate","ahate in dark quark jets",300,-2,3);
   hdjettrk3dsig = new TH1F("hdjettrk3dsig","3dsig for down quark jets",300,-2,3);
   hdkjettrk3dsig = new TH1F("hdkjettrk3dsig","3dsig for dark quark jets",300,-2,3);
   BinLogX(hdjettrk3dsig);
+  BinLogX(hdjettrkahate);
+  BinLogX(hdkjettrkahate);
   BinLogX(hdkjettrk3dsig);
   hdjettrk3dsig_sgn = new TH1F("hdjettrk3dsig_sgn","3dsig for down quark jets",300,-300,300);
   hdkjettrk3dsig_sgn = new TH1F("hdkjettrk3dsig_sgn","3dsig for dark quark jets",300,-300,300);
@@ -1697,7 +1699,7 @@ hntrk1a3ddk = new TH2F("hntrk1a3ddk","Ntrk>1GeV vs a3d dark quark jets "  ,20,0,
 
     // preselection plots
     if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4) {
-      hmet->Fill(OverFlow(met_pt,hmet));//Kak: distribtuion after kinematic cuts
+      hmet->Fill(OverFlow(met_pt,hmet));
       hpvpre->Fill(OverFlow(pv_z->at(0),hpvpre));
       hnvtxpre->Fill(OverFlow(nVtx,hnvtxpre));
       hntrkpre->Fill(OverFlow(nTracks,hntrkpre));
@@ -1710,6 +1712,7 @@ hntrk1a3ddk = new TH2F("hntrk1a3ddk","Ntrk>1GeV vs a3d dark quark jets "  ,20,0,
               vector<float> track_ipZs = track_ipZ->at(i);
               vector<float> track_ipXYSigs = track_ipXYSig->at(i);
               vector<float> track_ref_zs = track_ref_z->at(i);
+              vector<float> track_ip3DSigs= track_ip3DSig->at(i);
 	hjetptfrpre->Fill(std::min(jet_fpt[i],1.2));
 	hptallpre->Fill(OverFlow(jet_pt->at(i),hptallpre));
 	hmeanzpre->Fill(OverFlow(jet_meanz[i]-pv_z->at(0),hmeanzpre));
@@ -1773,7 +1776,11 @@ hntrk1a3ddk = new TH2F("hntrk1a3ddk","Ntrk>1GeV vs a3d dark quark jets "  ,20,0,
 		  hip2dud->Fill(OverFlow(track_ipXYs[itrack],hip2dud));
 		  ahate1=ahate1/deltaz;
 		  float ahate =sqrt(ahate1*ahate1+ahate2*ahate2);
-		  //hdjettrkahate->Fill(OverFlow(ahate,hdjettrkahate));
+		  if (isQCD) {
+			  hdjettrkahate->Fill(OverFlow(ahate,hdjettrkahate));
+		  	  hdjettrk3dsig->Fill(OverFlow(fabs(track_ip3DSigs[itrack]),hdjettrk3dsig));
+		  	  hdjettrk3dsig_sgn->Fill(OverFlow(track_ip3DSigs[itrack],hdjettrk3dsig_sgn));
+		  }
 		  hmipahateud->Fill(log10(rmed[i]),ahate);
 		  hmipipsigud->Fill(log10(rmed[i]),track_ipXYSigs[itrack]);
   		}}
@@ -2015,7 +2022,7 @@ hntrk1a3ddk = new TH2F("hntrk1a3ddk","Ntrk>1GeV vs a3d dark quark jets "  ,20,0,
     }  //selection besides on nemerging
 
       // make plots for fake rate studes
-    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem) {
+/*    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem) {
       for(Int_t j=0; j<NNNjet; j++) {
 	if(basicjet[j]) {
 	  hjptfrb->Fill(OverFlow(jet_pt->at(j),hjptfrb));
@@ -2027,7 +2034,7 @@ hntrk1a3ddk = new TH2F("hntrk1a3ddk","Ntrk>1GeV vs a3d dark quark jets "  ,20,0,
 	  }
 	}
       }
-    }
+    }*/
       // check without Canem
     if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4) {
       for(Int_t j=0; j<NNNjet; j++) {

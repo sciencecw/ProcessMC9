@@ -21,7 +21,7 @@ using std::vector;
 #include <TKey.h>
 #include <TCollection.h>
 #include <TObject.h>
-
+#include <TMath.h>
 
 struct Parmset {
   float HTcut;
@@ -74,7 +74,7 @@ TH2F* HistMan2(float goalintlum,std::string thisHIST,vector<double>& histnorm,
 void QCDhists(int imode, std::string outdir, int ibin, float goalintlum,  
 int nbin, float* xsec, int* nfiles, std::string* binnames,std::string* filesnames,
 std::string sumhistname,  bool hasPre,bool donorm, bool blind, const Parmset &ps);
-int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* outputfilename, const Parmset &ps, bool blind);
+int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* outputfilename, const Parmset &ps, bool blind,bool isQCD);
 
 
 //calculate invariant mass with various pairs

@@ -97,8 +97,11 @@ std::string sumhistname,  bool hasPre,bool donorm, bool blind, const Parmset &ps
       std::cout<<"input file is "<<inputfile<<std::endl;
       outputfile=bbname+"histos"+binnames[i]+"_"+std::to_string(linecounter)+".root";
       std::cout<<"output file is "<<outputfile<<std::endl;
+      bool isQCD = binnames[i].find("QCD")!=std::string::npos;
+      if (isQCD) std::cout<< "it is QCD"<<std::endl; 
+      else std::cout<< "not QCD"<<std::endl; 
 
-      int itmp = EMJselect(true,hasPre,inputfile.c_str(),outputfile.c_str(),ps,blind);
+      int itmp = EMJselect(true,hasPre,inputfile.c_str(),outputfile.c_str(),ps,blind,isQCD);
       linecounter +=1;
       std::cout<<"passcounts: "<<itmp<<std::endl;
     }  // end of loop over files
