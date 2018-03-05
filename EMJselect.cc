@@ -196,7 +196,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   tt->SetBranchAddress("run",&run);
   tt->SetBranchAddress("met_pt",&met_pt);
   tt->SetBranchAddress("met_phi",&met_phi);
-  tt->SetBranchAddress("HLT_PFHT800",&hltbit);
+  tt->SetBranchAddress("HLT_PFHT900",&hltbit);
 
   //jets
   tt->SetBranchAddress("jet_index",&jet_index);
@@ -414,10 +414,10 @@ hmetaud = new TH1F("hmetaud","met jet-component u,d quark jets " ,100,-1000.,100
 hmetadk = new TH1F("hmetadk","met jet-component dark quark jets ",100,-1000.,1000.);
 
 
-  hdjettrkahate = new TH1F("hdjettrkahate","ahate in down quark jets",300,-2,3);
-  hdkjettrkahate = new TH1F("hdkjettrkahate","ahate in dark quark jets",300,-2,3);
-  hdjettrk3dsig = new TH1F("hdjettrk3dsig","3dsig for down quark jets",300,-2,3);
-  hdkjettrk3dsig = new TH1F("hdkjettrk3dsig","3dsig for dark quark jets",300,-2,3);
+  hdjettrkahate = new TH1F("hdjettrkahate","ahate in down quark jets",300,-2,4);
+  hdkjettrkahate = new TH1F("hdkjettrkahate","ahate in dark quark jets",300,-2,4);
+  hdjettrk3dsig = new TH1F("hdjettrk3dsig","3dsig for down quark jets",300,-2,4);
+  hdkjettrk3dsig = new TH1F("hdkjettrk3dsig","3dsig for dark quark jets",300,-2,4);
   BinLogX(hdjettrk3dsig);
   BinLogX(hdjettrkahate);
   BinLogX(hdkjettrkahate);
@@ -1177,7 +1177,7 @@ hntrk1a3ddk = new TH2F("hntrk1a3ddk","Ntrk>1GeV vs a3d dark quark jets "  ,20,0,
 
 
     //hltbit=1;
-    if(otfile&&hltbit) H_T->Fill(OverFlow(HT,H_T));
+    if(otfile) H_T->Fill(OverFlow(HT,H_T));
     if(otfile&&hltbit) hht4->Fill(HTall,HT);
     if(otfile&&NNNjet>0&&hltbit) hpt1->Fill(OverFlow(jet_pt->at(0),hpt1));
     if(otfile&&NNNjet>1&&hltbit) hpt2->Fill(OverFlow(jet_pt->at(1),hpt2));
@@ -1422,11 +1422,11 @@ hntrk1a3ddk = new TH2F("hntrk1a3ddk","Ntrk>1GeV vs a3d dark quark jets "  ,20,0,
  		  h2ipvzdk->Fill(ahate2,ahate1);
 		  ahate1=ahate1/deltaz;
 		  float ahate =sqrt(ahate1*ahate1+ahate2*ahate2);
+	          if(fabs(pv_z->at(0)-track_ref_zs[itrack])<ps.pilecut) 
+		  {
 		  hdkjettrkahate->Fill(OverFlow(ahate,hdkjettrkahate));
 		  hdkjettrk3dsig->Fill(OverFlow(fabs(track_ip3DSigs[itrack]),hdkjettrk3dsig));
 		  hdkjettrk3dsig_sgn->Fill(OverFlow(track_ip3DSigs[itrack],hdkjettrk3dsig_sgn));
-	          if(fabs(pv_z->at(0)-track_ref_zs[itrack])<ps.pilecut) 
-		  {
 		    hdkjettrkip->Fill(OverFlow(track_ipXYs[itrack],hdkjettrkip));
 		    hdkjettrkips->Fill(OverFlow(track_ipXYSigs[itrack],hdkjettrkips));
 		    hdkjettrkw->Fill(OverFlow(track_pvWeights[itrack],hdkjettrkw));
@@ -1468,9 +1468,9 @@ hntrk1a3ddk = new TH2F("hntrk1a3ddk","Ntrk>1GeV vs a3d dark quark jets "  ,20,0,
 	      hsum2Dfd->Fill(OverFlow(amax2Df2[i],hsum2Dfd));
 	      //hdjetamo->Fill(OverFlow(jet_alphaMax->at(i),hdjetamo));
 	      ham2dfd->Fill(OverFlow(a3d[i],ham2dfd));
-		htheta2dd ->Fill(OverFlow(log(jet_theta2D->at(i)),htheta2dd ));
-		hmedipd ->Fill(OverFlow(rmed[i],hmedipd ));
-		hmedsipd ->Fill(OverFlow(rsmed[i],hmedsipd ));
+	      htheta2dd ->Fill(OverFlow(log(jet_theta2D->at(i)),htheta2dd ));
+	      hmedipd ->Fill(OverFlow(rmed[i],hmedipd ));
+	      hmedsipd ->Fill(OverFlow(rsmed[i],hmedsipd ));
 	      //hdjetam2d->Fill(OverFlow(amax2D[i],hdjetam2d));
 	      //aMbh2Dd->Fill(AM[i],amax2D[i]);
 	      //float why1=jet_meanz[i]-pv_z->at(0);
@@ -1497,6 +1497,7 @@ hntrk1a3ddk = new TH2F("hntrk1a3ddk","Ntrk>1GeV vs a3d dark quark jets "  ,20,0,
 		  hip2dd->Fill(OverFlow(track_ipXYs[itrack],hip2dd));
 		  ahate1=ahate1/deltaz;
 		  float ahate =sqrt(ahate1*ahate1+ahate2*ahate2);
+		  if(fabs(pv_z->at(0)-track_ref_zs[itrack])<ps.pilecut){
 		  hdjettrkahate->Fill(OverFlow(ahate,hdjettrkahate));
 		  hdjettrk3dsig->Fill(OverFlow(fabs(track_ip3DSigs[itrack]),hdjettrk3dsig));
 		  hdjettrk3dsig_sgn->Fill(OverFlow(track_ip3DSigs[itrack],hdjettrk3dsig_sgn));
@@ -1536,7 +1537,7 @@ hntrk1a3ddk = new TH2F("hntrk1a3ddk","Ntrk>1GeV vs a3d dark quark jets "  ,20,0,
 		      hdjettrgip->Fill(OverFlow(aaa,hdjettrgip));
 		    }
 		  }
-
+		}
 		}  //end track source
 	      
 	      }  // end loop over tracks
@@ -1776,7 +1777,7 @@ hntrk1a3ddk = new TH2F("hntrk1a3ddk","Ntrk>1GeV vs a3d dark quark jets "  ,20,0,
 		  hip2dud->Fill(OverFlow(track_ipXYs[itrack],hip2dud));
 		  ahate1=ahate1/deltaz;
 		  float ahate =sqrt(ahate1*ahate1+ahate2*ahate2);
-		  if (isQCD) {
+		  if (isQCD && fabs(pv_z->at(0)-track_ref_zs[itrack])<ps.pilecut) {
 			  hdjettrkahate->Fill(OverFlow(ahate,hdjettrkahate));
 		  	  hdjettrk3dsig->Fill(OverFlow(fabs(track_ip3DSigs[itrack]),hdjettrk3dsig));
 		  	  hdjettrk3dsig_sgn->Fill(OverFlow(track_ip3DSigs[itrack],hdjettrk3dsig_sgn));

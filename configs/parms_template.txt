@@ -1,7 +1,7 @@
-1  # has histogram eventCountPreTrigger
+1  # pretrig obsolete
 1  # number of HT bins used in generation
-18.45  # cross section for each bin
+NUM  # number of files for each bin
 NUM  # number of files for each bin
 DIRNAME   # name for each bin
-configs/model_80Xb/DIRNAME_config.txt # config files for location of ntuples
-SumHistDIRNAME  # for summary hist
+CONFIGFILE # config files
+SumHistDIRNAME #filename

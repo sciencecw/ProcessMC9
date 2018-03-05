@@ -4,7 +4,7 @@
 #while IFS='' read -r line || [[ -n "$line" ]]; do
 #    echo "Text read from file: $line"
 #done < models.txt
-
+set -e
 if [[ $# -eq 0 ]] ; then
     echo 'usage ./modelrun.sh [mode]'
     exit 1
@@ -16,7 +16,7 @@ fi
 while read -r folder
   #do folder=${fullpath%/} 
   #folder=${folder##*/}
-  do yes | python control.py -s $folder -m$1 -n80Xb >>modelrunoutput.log
-  echo "python control.py -s $folder -m$1 -n80Xb"
+  do yes | python control.py -s $folder -m$1 -n80X_1103 >>modelrunoutput.log
+  echo "python control.py -s $folder -m$1 -n80X_1103"
   ./massjobs.sh
-done < configs/models_80Xb.txt
+done < configs/models_80Xb_20171103.txt
